@@ -8,11 +8,13 @@ config();
 
 export class DiscordClient extends Client implements ClientInterface {
   BotToken: string;
+  Events: Collection<string, EventInterface>;
 
   constructor() {
     // TODO: Add Proper Intents instead using all the intents
     super({ intents: [32767] });
     this.BotToken = process.env.DISCORD_TOKEN as string;
+    this.Events = new Collection();
   }
 
   init(): void {
@@ -28,25 +30,29 @@ export class DiscordClient extends Client implements ClientInterface {
 
   async loadEvents() {
     const files = await getFiles(this, 'events');
-    files.map(async (file: string) => {
-      try {
-        const importedModule = (await import(file)).default;
-        const event = new importedModule(this);
-        if (!event.name) {
-          console.log(`Invalid Event File: ${file}`);
-          return;
+    await Promise.all(
+      files.map(async (file: string) => {
+        try {
+          const importedModule = (await import(file)).default;
+          const event = new importedModule(this);
+          if (!event.name) {
+            console.log(`Invalid Event File: ${file}`);
+            return;
+          }
+          const execute = (...args: any[]) => event.execute(...args);
+
+          if (event.once) {
+            this.once(event.name, execute);
+          } else {
+            this.on(event.name, execute);
+          }
+          this.Events.set(event.name, event);
+          // DEBUG: console.log(`Loaded Event: ${event.name}`);
+        } catch (err) {
+          console.log(`Failed to Load Event: ${file.split('/').pop()}`);
         }
-        const execute = (...args: any[]) => event.execute(...args);
-        if (event.once) {
-          this.once(event.name, execute);
-        } else {
-          this.on(event.name, execute);
-        }
-        // DEBUG: console.log(`Loaded Event: ${event.name}`);
-      } catch (err) {
-        console.log(`Failed to Load Event: ${file}`);
-        console.log(err);
-      }
-    });
+      }),
+    );
+    console.log(`Loaded ${this.Events.size} Events!`);
   }
 }

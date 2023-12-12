@@ -1,4 +1,7 @@
+import { DiscordClient } from '../discordClient';
+
 export interface CommandInterface {
+  client: DiscordClient;
   name: string;
   description: string;
 
