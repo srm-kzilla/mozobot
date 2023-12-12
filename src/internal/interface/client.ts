@@ -1,9 +1,21 @@
 import { Collection } from 'discord.js';
 import { EventInterface } from './event';
+import { CommandInterface } from './command';
 
 export interface ClientInterface {
-  BotToken: string;
+  botToken: string;
+  testGuildID: string;
+  clientID: string;
+
+  Commands?: Collection<string, CommandInterface>;
   Events?: Collection<string, EventInterface>;
-  // SlashCommands: Collection<string, Command>;
+
   init(): void;
+
+  loadHandlers(): void;
+  loadEventsHandler(): void;
+  loadCommands(): void;
+
+  getCommandData(): object;
+  registerSlashCommands(): void;
 }

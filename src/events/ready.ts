@@ -2,7 +2,7 @@ import { Events } from 'discord.js';
 import { DiscordClient } from '../internal/discordClient';
 import { EventInterface } from '../internal/interface/event';
 
-export default class event implements EventInterface {
+export default class ReadyEvent implements EventInterface {
   client: DiscordClient;
   name: Events;
   once: boolean;
@@ -15,5 +15,8 @@ export default class event implements EventInterface {
 
   async execute() {
     console.log(`Logged in as ${this.client.user?.tag}`);
+
+    // TODO: Find a better way to do this
+    await this.client.registerSlashCommands();
   }
 }
