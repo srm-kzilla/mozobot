@@ -1,5 +1,4 @@
-import { Client, Collection, Events } from 'discord.js';
-import { getcommands } from '../utils/loadCommands';
+import { Client, Events } from 'discord.js';
 
 export default {
   name: Events.ClientReady,

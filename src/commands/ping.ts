@@ -1,11 +1,11 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { ICommand } from '../interface/command';
+import { ICommand } from '../interface';
 
 export default {
   data: new SlashCommandBuilder().setName('ping').setDescription('Replies with Pong!').setDMPermission(false),
 
   async execute(interaction) {
-    const message = interaction.reply({ content: 'Pong!', fetchReply: true });
-    interaction.editReply(`Pong! Latency is ${Math.abs(Date.now() - (await message).createdTimestamp)}ms.`);
+    const message = await interaction.reply({ content: 'Pong!', fetchReply: true });
+    await interaction.editReply(`Pong! Latency is ${Math.abs(Date.now() - message.createdTimestamp)}ms.`);
   },
 } as ICommand;

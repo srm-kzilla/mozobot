@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Events, Interaction, Collection } from 'discord.js';
+import { ChatInputCommandInteraction, Collection, Events, Interaction } from 'discord.js';
 import { ICommand } from '../interface';
 
 export default {
