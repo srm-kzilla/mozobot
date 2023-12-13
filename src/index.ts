@@ -9,9 +9,8 @@ export default async function initialiseBot() {
 
   try {
     await loadCommands();
-    // console.log(Commands);
     await loadEvents(client, getcommands());
-    // await registerSlashCommands();
+    await registerSlashCommands();
     client.login(config.botToken);
   } catch (err) {
     console.log(err);

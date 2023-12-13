@@ -17,7 +17,6 @@ export async function loadCommands() {
           console.log(`Invalid Event File: ${file}`);
           return;
         }
-        console.log(`Loaded Command: ${command}`);
         Commands.set(command.data.name, command);
         commandsData.push(command.data.toJSON());
       } catch (err) {
@@ -26,7 +25,6 @@ export async function loadCommands() {
     }),
   );
   console.log(`Loaded ${Commands.size} commands.`);
-  console.log(Commands.get('ping'));
 }
 
 export async function registerSlashCommands() {

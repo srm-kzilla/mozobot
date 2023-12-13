@@ -5,6 +5,7 @@ export default {
   data: new SlashCommandBuilder().setName('ping').setDescription('Replies with Pong!').setDMPermission(false),
 
   async execute(interaction) {
-    await interaction.reply('Pong!');
+    const message = interaction.reply({ content: 'Pong!', fetchReply: true });
+    interaction.editReply(`Pong! Latency is ${Math.abs(Date.now() - (await message).createdTimestamp)}ms.`);
   },
 } as ICommand;

@@ -1,21 +1,20 @@
-import { ChatInputCommandInteraction, Events, Interaction } from 'discord.js';
-import { Commands } from '../utils/loadCommands';
+import { ChatInputCommandInteraction, Events, Interaction, Collection } from 'discord.js';
+import { ICommand } from '../interface';
 
 export default {
   name: Events.InteractionCreate,
   once: false,
 
-  async execute(interaction: Interaction) {
+  async execute(interaction: Interaction, Commands: Collection<string, ICommand>) {
     if (interaction.isChatInputCommand()) {
-      await handleChatCommand(interaction);
+      await handleChatCommand(interaction, Commands);
     }
 
     // Implement Other Interaction Types when needed
   },
 };
 
-async function handleChatCommand(interaction: ChatInputCommandInteraction) {
-  console.log(`--> ${interaction.commandName}`);
+async function handleChatCommand(interaction: ChatInputCommandInteraction, Commands: Collection<string, ICommand>) {
   const command = Commands.get(`${interaction.commandName}`);
   if (!command) {
     console.log('Command not found here', Commands);
