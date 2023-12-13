@@ -1,16 +1,25 @@
 {
   "compilerOptions": {
-    "target": "es2020",
-    "module": "ES2020",
-    "rootDir": "./src",
-    "outDir": "./build",
-    "moduleResolution": "node",
-    "removeComments": true,
-    "forceConsistentCasingInFileNames": true,
+    /* Base Options: */
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2022",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    /* Strictness */
     "strict": true,
-    "noImplicitAny": true,
     "strictNullChecks": true,
-    "skipLibCheck": true
-  },
-  "exclude": ["node_modules", "build"]
+    "noImplicitAny": true,
+    "noUncheckedIndexedAccess": true,
+    /* If transpiling with TypeScript: */
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    "outDir": "build",
+    "sourceMap": true,
+    // /* If your code doesn't run in the DOM: */
+    "lib": ["es2022"]
+  }
 }

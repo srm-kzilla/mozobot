@@ -6,29 +6,26 @@ export default {
   once: false,
 
   async execute(interaction: Interaction, Commands: Collection<string, ICommand>) {
-    if (interaction.isChatInputCommand()) {
-      await handleChatCommand(interaction, Commands);
+    if (!interaction.isChatInputCommand()) return;
+    await handleChatCommand(interaction, Commands);
+
+    const command = Commands.get(`${interaction.commandName}`);
+    if (!command) {
+      console.log('Command not found here', Commands);
+      await interaction.reply({ content: 'Command not found', ephemeral: true });
+      return;
     }
 
-    // Implement Other Interaction Types when needed
+    try {
+      await command.execute(interaction);
+    } catch (err) {
+      console.error(err);
+      await interaction.reply({
+        content: 'There was an error while executing this command!',
+        ephemeral: true,
+      });
+    }
   },
 };
 
-async function handleChatCommand(interaction: ChatInputCommandInteraction, Commands: Collection<string, ICommand>) {
-  const command = Commands.get(`${interaction.commandName}`);
-  if (!command) {
-    console.log('Command not found here', Commands);
-    await interaction.reply({ content: 'Command not found', ephemeral: true });
-    return;
-  }
-
-  try {
-    await command.execute(interaction);
-  } catch (err) {
-    console.error(err);
-    await interaction.reply({
-      content: 'There was an error while executing this command!',
-      ephemeral: true,
-    });
-  }
-}
+async function handleChatCommand(interaction: ChatInputCommandInteraction, Commands: Collection<string, ICommand>) {}

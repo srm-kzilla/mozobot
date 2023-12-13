@@ -12,7 +12,7 @@ export async function loadCommands() {
   await Promise.all(
     files.map(async (file: string) => {
       try {
-        const command = (await import(file)).default;
+        const { default: command } = (await import(file)).default;
         if (!command.data.name) {
           console.log(`Invalid Event File: ${file}`);
           return;
