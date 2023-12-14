@@ -1,9 +1,9 @@
 import { Collection, REST, Routes } from 'discord.js';
-import { ICommand } from '../interface';
+import { CommandInterface } from '../interface';
 import config from '../config';
 import { getFiles } from './getFiles';
 
-const Commands: Collection<string, ICommand> = new Collection();
+const commands: Collection<string, CommandInterface> = new Collection();
 const commandsData: JSON[] = [];
 
 export async function loadCommands() {
@@ -17,14 +17,14 @@ export async function loadCommands() {
           console.log(`Invalid Event File: ${file}`);
           return;
         }
-        Commands.set(command.data.name, command);
+        commands.set(command.data.name, command);
         commandsData.push(command.data.toJSON());
       } catch (err) {
         console.log(`Failed to Load Event: ${file.split('/').pop()}`);
       }
     }),
   );
-  console.log(`Loaded ${Commands.size} commands.`);
+  console.log(`Loaded ${commands.size} commands.`);
 }
 
 export async function registerSlashCommands() {
@@ -38,8 +38,5 @@ export async function registerSlashCommands() {
 }
 
 export function getcommands() {
-  return Commands;
+  return commands;
 }
-
-// let see if this works
-export { Commands };
