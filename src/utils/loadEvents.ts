@@ -20,7 +20,6 @@ export async function loadEvents(client: Client, commands: any) {
           client.on(event.name, execute);
         }
         events.push(event);
-        // DEBUG: console.log(`Loaded Event: ${event.name}`);
       } catch (err) {
         console.log(`Failed to Load Event: ${file.split('/').pop()}`);
         console.log(err);

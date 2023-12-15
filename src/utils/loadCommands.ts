@@ -1,9 +1,9 @@
 import { Collection, REST, Routes } from 'discord.js';
-import { CommandInterface } from '../interface';
+import { Command } from '../interface';
 import config from '../config';
 import { getFiles } from './getFiles';
 
-const commands: Collection<string, CommandInterface> = new Collection();
+const commands: Collection<string, Command> = new Collection();
 const commandsData: JSON[] = [];
 
 export async function loadCommands() {

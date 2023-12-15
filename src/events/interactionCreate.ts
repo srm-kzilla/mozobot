@@ -1,17 +1,16 @@
 import { ChatInputCommandInteraction, Collection, Events, Interaction } from 'discord.js';
-import { CommandInterface } from '../interface';
+import { Command } from '../interface';
 
 export default {
   name: Events.InteractionCreate,
   once: false,
 
-  async execute(interaction: Interaction, Commands: Collection<string, CommandInterface>) {
+  async execute(interaction: Interaction, commands: Collection<string, Command>) {
     if (!interaction.isChatInputCommand()) return;
-    await handleChatCommand(interaction, Commands);
 
-    const command = Commands.get(interaction.commandName);
+    const command = commands.get(interaction.commandName);
     if (!command) {
-      console.log('Command not found here', Commands);
+      console.log('Command not found here', commands);
       await interaction.reply({ content: 'Command not found', ephemeral: true });
       return;
     }
@@ -27,8 +26,3 @@ export default {
     }
   },
 };
-
-async function handleChatCommand(
-  interaction: ChatInputCommandInteraction,
-  Commands: Collection<string, CommandInterface>,
-) {}
