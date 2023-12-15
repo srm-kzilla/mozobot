@@ -2,6 +2,7 @@ import { Client } from 'discord.js';
 import config from './config';
 import { getcommands, loadCommands, loadEvents, registerSlashCommands } from './utils';
 
+// Initialise bot [temporary]
 async function initialiseBot() {
   const client = new Client({
     intents: [32767],
