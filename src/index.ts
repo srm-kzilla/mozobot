@@ -1,12 +1,20 @@
-import {Client, Events} from "discord.js";
-import {config} from "dotenv";
+import { Client } from 'discord.js';
+import config from './config';
+import { getcommands, loadCommands, loadEvents, registerSlashCommands } from './utils';
 
-config()
-const token = process.env.DISCORD_TOKEN || "";
-const client = new Client({intents: 32767});
+async function initialiseBot() {
+  const client = new Client({
+    intents: [32767],
+  });
 
-client.once(Events.ClientReady, async (readyClient) => {
-    console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-});
+  try {
+    await loadCommands();
+    await loadEvents(client, getcommands());
+    await registerSlashCommands();
+    await client.login(config.botToken);
+  } catch (err) {
+    console.log(err);
+  }
+}
 
-client.login(token);
+initialiseBot();
