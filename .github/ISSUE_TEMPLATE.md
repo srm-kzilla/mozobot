@@ -24,7 +24,6 @@ Please provide any relevant information about your setup. This is important in c
 
 - Firmware Version:
 - Operating System:
-- SDK version:
 - Toolchain version:
 
 ## Failure Logs
