@@ -1,11 +1,15 @@
 # MozoBot
-- `MozoBot` is a Discord bot that is used to manage the SRMKZILLA Discord server. Especially for the MozoFest event. 
- 
+
+- `MozoBot` is a Discord bot that is used to manage the SRMKZILLA Discord server. Especially for the MozoFest event.
+
 ---
+
 ## License 📜
+
 `MozoBot` is available under the MIT license. See the LICENSE file for more info.
 
 ## Contributing 🤝
+
 Please read `Contributing.md` for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Forking this repo 🚨
