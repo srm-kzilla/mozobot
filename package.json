@@ -11,7 +11,7 @@
     "build": "tsc",
     "dev": "tsc-watch --onSuccess 'node build/index.js' ",
     "format": "prettier --write src/*.ts src/**/*.ts",
-    "check": "prettier --check src/*.ts src/**/*.ts"
+    "format:check": "prettier --check src/*.ts src/**/*.ts"
   },
   "dependencies": {
     "discord.js": "^14.14.1",
