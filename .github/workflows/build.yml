@@ -19,11 +19,14 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
-      - name: Install dependencies
+      - name: Install dev dependencies
         run: pnpm install -D
 
       - name: Prettier check
         run: pnpm check
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Build
         run: pnpm build
