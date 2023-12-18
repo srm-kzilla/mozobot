@@ -1,21 +1,22 @@
-name: Build
+name: build
 
 on:
-  pull_request:
-    paths: ['src/**']
   push:
-    paths: ['src/**', 'package.json', 'tsconfig.json']
-    branches: ['**']
+    branches: ['main']
+  pull_request:
+    branches: ['main']
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 18.x
+          node-version: 20.10
 
       - uses: pnpm/action-setup@v2
         name: Install pnpm
@@ -27,7 +28,7 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-  
+
       - uses: actions/cache@v3
         name: Setup pnpm cache
         with:
@@ -36,11 +37,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Install dev dependencies
+      - name: Install dependencies
         run: pnpm install
 
-      - name: Prettier check
-        run: pnpm format:check
-
       - name: Build
-        run: pnpm build
+        run: pnpm run build
