@@ -30,9 +30,9 @@ export async function loadCommands() {
 export async function registerSlashCommands() {
   const rest = new REST().setToken(config.botToken);
 
-  const setCommands = await rest.put(Routes.applicationGuildCommands(config.clientID, config.GuildID), {
+  const setCommands = (await rest.put(Routes.applicationGuildCommands(config.clientID, config.GuildID), {
     body: commandsData,
-  }) as unknown[]
+  })) as unknown[];
   console.log(`Successfully registered ${setCommands.length} application commands.`);
 }
 
