@@ -16,6 +16,6 @@ export type EnvSchemaType = z.infer<typeof envSchema>;
 export default {
   botToken: env.DISCORD_TOKEN,
   clientID: env.DISCORD_CLIENT_ID,
-  GuildID: env.GUILD_ID,
+  guildID: env.GUILD_ID,
   nodeEnv: env.NODE_ENV,
 };
