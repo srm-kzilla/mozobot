@@ -9,7 +9,7 @@
   "scripts": {
     "start": "NODE_ENV=production node build/index.js",
     "build": "tsc",
-    "dev": "tsc-watch --onSuccess 'node build/index.js' ",
+    "dev": "tsc-watch --onSuccess \"node build/index.js\"",
     "format": "prettier --write src/*.ts src/**/*.ts",
     "format:check": "prettier --check src/*.ts src/**/*.ts"
   },
