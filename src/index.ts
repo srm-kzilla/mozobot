@@ -1,6 +1,6 @@
 import { Client } from 'discord.js';
 import config from './config';
-import { getcommands, loadCommands, loadEvents, registerSlashCommands } from './utils';
+import { getCommands, loadCommands, loadEvents, registerSlashCommands } from './utils';
 
 async function initialiseBot() {
   const client = new Client({
@@ -9,7 +9,7 @@ async function initialiseBot() {
 
   try {
     await loadCommands();
-    await loadEvents(client, getcommands());
+    await loadEvents(client, getCommands());
     await registerSlashCommands();
     await client.login(config.botToken);
   } catch (err) {

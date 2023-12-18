@@ -37,6 +37,6 @@ export async function registerSlashCommands() {
   console.log(`Successfully registered ${setCommands.length} application commands.`);
 }
 
-export function getcommands() {
+export function getCommands() {
   return commands;
 }

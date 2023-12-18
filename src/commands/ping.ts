@@ -2,7 +2,10 @@ import { SlashCommandBuilder } from 'discord.js';
 import { Command } from '../interface';
 
 export default {
-  data: new SlashCommandBuilder().setName('ping').setDescription('Replies with Pong!').setDMPermission(false),
+  data: new SlashCommandBuilder()
+    .setName('ping')
+    .setDescription('Replies with Pong!')
+    .setDMPermission(false),
 
   async execute(interaction) {
     const message = await interaction.reply({ content: 'Pong!', fetchReply: true });
