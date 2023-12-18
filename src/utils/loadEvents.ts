@@ -13,7 +13,7 @@ export async function loadEvents(client: Client, commands: Collection<string, Co
           console.log(`Invalid Event File: ${file}`);
           return;
         }
-        const execute = (...args: any[]) => event.execute(...args, commands);
+        const execute = (...args: unknown[]) => event.execute(...args, commands);
 
         if (event.once) {
           client.once(event.name, execute);

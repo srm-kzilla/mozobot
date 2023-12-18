@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Collection, Events, Interaction } from 'discord.js';
+import { Collection, Events, Interaction } from 'discord.js';
 import { Command } from '../interface';
 
 export default {
@@ -16,7 +16,7 @@ export default {
     }
 
     try {
-      await command.execute(interaction);
+      command.execute(interaction);
     } catch (err) {
       console.error(err);
       await interaction.reply({
