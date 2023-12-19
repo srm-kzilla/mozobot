@@ -1,7 +1,8 @@
-import { Client } from 'discord.js';
+import { Client, Collection } from 'discord.js';
 import { getFiles } from './getFiles';
+import { Command } from '../interface';
 
-export async function loadEvents(client: Client, commands: any) {
+export async function loadEvents(client: Client, commands: Collection<string, Command>) {
   const files = await getFiles('events');
   const events: string[] = [];
   await Promise.all(
@@ -12,7 +13,7 @@ export async function loadEvents(client: Client, commands: any) {
           console.log(`Invalid Event File: ${file}`);
           return;
         }
-        const execute = (...args: any[]) => event.execute(...args, commands);
+        const execute = (...args: unknown[]) => event.execute(...args, commands);
 
         if (event.once) {
           client.once(event.name, execute);

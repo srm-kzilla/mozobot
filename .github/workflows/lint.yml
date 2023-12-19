@@ -1,4 +1,4 @@
-name: build
+name: lint
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: ['main']
 
 jobs:
-  build:
+  esLint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,5 +40,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build
-        run: pnpm run build
+      - name: Prettier Check
+        run: pnpm run format:check
+
+      - name: ESLint
+        run: pnpm lint
