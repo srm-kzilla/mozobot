@@ -7,7 +7,7 @@ on:
     branches: ['main']
 
 jobs:
-  esLint:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
