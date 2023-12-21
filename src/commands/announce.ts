@@ -24,7 +24,7 @@ export default {
 
   async execute(interaction) {
     const channelID = (interaction.options.getChannel('channel')?.id || interaction.channelId) as string;
-    const modal = new ModalBuilder().setCustomId(`announce-${channelID}`).setTitle('My Modal');
+    const modal = new ModalBuilder().setCustomId(`announce-${channelID}`).setTitle('Announcements');
     const Title = new TextInputBuilder()
       .setCustomId('Title')
       .setLabel('Provide us with the Title')
