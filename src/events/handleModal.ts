@@ -1,4 +1,5 @@
 import { ChannelType, EmbedBuilder, Events, Interaction } from 'discord.js';
+import { COLOR } from '../config/constant';
 
 export default {
   name: Events.InteractionCreate,
@@ -24,7 +25,7 @@ export default {
     const Description = interaction.fields.getTextInputValue('Description');
 
     if (cmd === 'announce') {
-      const embed = new EmbedBuilder().setTitle(Title).setDescription(Description).setColor('#FFFFFF');
+      const embed = new EmbedBuilder().setTitle(Title).setDescription(Description).setColor(COLOR);
 
       await channel.send({ embeds: [embed] });
     } else if (cmd === 'echo') {
