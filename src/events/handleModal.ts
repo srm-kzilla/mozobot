@@ -14,11 +14,13 @@ export default {
     const channel = interaction.guild.channels.cache.get(channelID);
 
     if (!channel) {
-      return await interaction.reply({ content: 'Target Channel Not Found', ephemeral: true });
+      await interaction.reply({ content: 'Target Channel Not Found', ephemeral: true });
+      return;
     }
 
     if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement) {
-      return await interaction.reply({ content: 'Inavlid Channel Provided. Please Provide a text channel' });
+      await interaction.reply({ content: 'Inavlid Channel Provided. Please Provide a text channel' });
+      return;
     }
 
     const Title = interaction.fields.getTextInputValue('Title');
