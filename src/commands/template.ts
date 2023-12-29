@@ -26,26 +26,32 @@ export default {
 
   async execute(interaction) {
     const subcommand = interaction.options.getSubcommand();
+
     if (subcommand === 'create') {
       const modal = new ModalBuilder().setCustomId(`template`).setTitle('Add Template');
       const Title = new TextInputBuilder()
         .setCustomId('Title')
         .setLabel('Provide us with the Title')
         .setStyle(TextInputStyle.Short);
+
       const Description = new TextInputBuilder()
         .setCustomId('Description')
         .setLabel('Provide us with some Description')
         .setStyle(TextInputStyle.Paragraph);
+
       const firstActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Title);
       const secondActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Description);
+
       modal.addComponents(firstActionRow, secondActionRow);
       await interaction.showModal(modal);
+
     } else if (subcommand === 'delete') {
       const data = await (await db()).collection('templates').find().toArray();
+
       const templatesData = data.map(data => ({
-        label: data.Title,
-        description: data.Description.slice,
-        value: JSON.stringify(data),
+        label: data.Title.slice(0, 50),
+        description: data.Description.slice(0, 50),
+        value: data._id.toString(),
       }));
       console.log(templatesData);
       const selectMenu = new StringSelectMenuBuilder()
@@ -55,11 +61,12 @@ export default {
 
       const actionRow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu);
       await interaction.reply({ content: 'Select a template to delete:', components: [actionRow], ephemeral: true });
+
     } else if (subcommand === 'list') {
       const data = await (await db()).collection('templates').find().toArray();
       const templatesData = data.map(data => ({
-        label: data.Title,
-        description: data.Description,
+        label: data.Title.slice(0, 50),
+        description: data.Description.slice(0, 50),
         value: data._id.toString(),
       }));
 
