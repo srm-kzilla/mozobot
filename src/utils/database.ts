@@ -15,4 +15,3 @@ export default async (): Promise<Db> => {
   }
   return db;
 };
-export async function add(title: string, description: string) {}
