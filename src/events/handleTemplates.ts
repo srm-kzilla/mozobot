@@ -13,11 +13,9 @@ export default {
         const templateID = interaction.values[0];
 
         const collection = (await db()).collection('templates');
-        await collection.deleteOne({  _id: new ObjectId(templateID)});
+        await collection.deleteOne({ _id: new ObjectId(templateID) });
         await interaction.reply('Successfully Deleted');
-
       } else if (interaction.customId === 'chooseTemplate') {
-
         const templateID = interaction.values[0];
         await interaction.reply({
           content: `Use \`/announce\` or \`/echo\` command and provide with this \`${templateID}\` to use it.`,

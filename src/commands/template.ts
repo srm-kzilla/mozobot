@@ -44,7 +44,6 @@ export default {
 
       modal.addComponents(firstActionRow, secondActionRow);
       await interaction.showModal(modal);
-
     } else if (subcommand === 'delete') {
       const data = await (await db()).collection('templates').find().toArray();
 
@@ -61,7 +60,6 @@ export default {
 
       const actionRow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu);
       await interaction.reply({ content: 'Select a template to delete:', components: [actionRow], ephemeral: true });
-
     } else if (subcommand === 'list') {
       const data = await (await db()).collection('templates').find().toArray();
       const templatesData = data.map(data => ({

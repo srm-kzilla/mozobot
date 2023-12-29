@@ -7,7 +7,7 @@ import {
   TextInputBuilder,
   TextInputStyle,
   EmbedBuilder,
-  ColorResolvable
+  ColorResolvable,
 } from 'discord.js';
 import { Command } from '../interface';
 import { COLOR } from '../config/constant';
@@ -25,31 +25,29 @@ export default {
         .setDescription('Channel to announce to')
         .setRequired(true)
         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement);
-    }) 
+    })
     .addStringOption(option =>
-      option.setName('template-id')
-            .setDescription('The template you want to use')
-            .setRequired(false)) as SlashCommandBuilder,
+      option.setName('template-id').setDescription('The template you want to use').setRequired(false),
+    ) as SlashCommandBuilder,
 
   async execute(interaction) {
-    if(!interaction.guild) return;
+    if (!interaction.guild) return;
 
     const channelID = (interaction.options.getChannel('channel')?.id || interaction.channelId) as string;
-    const templateID = interaction.options.getString('template-id') 
+    const templateID = interaction.options.getString('template-id');
 
     if (templateID) {
       const data = await (await db()).collection('templates').findOne({ _id: new ObjectId(templateID) });
 
-      if(!data) {
-        await interaction.reply({content: 'Did not find a template with that ID', ephemeral: true})
+      if (!data) {
+        await interaction.reply({ content: 'Did not find a template with that ID', ephemeral: true });
         return;
       }
-      console.log(data)
 
       const embed = new EmbedBuilder()
-      .setTitle(data.Title)
-      .setDescription(data.Description)
-      .setColor(COLOR.WHITE as ColorResolvable);
+        .setTitle(data.Title)
+        .setDescription(data.Description)
+        .setColor(COLOR.WHITE as ColorResolvable);
 
       const channel = interaction.guild.channels.cache.get(channelID);
 
@@ -69,7 +67,6 @@ export default {
       return;
     }
 
-
     const modal = new ModalBuilder().setCustomId(`announce-${channelID}`).setTitle('Announcements');
     const Title = new TextInputBuilder()
       .setCustomId('Title')
@@ -84,6 +81,5 @@ export default {
     const secondActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Description);
     modal.addComponents(firstActionRow, secondActionRow);
     await interaction.showModal(modal);
-
   },
 } as Command;

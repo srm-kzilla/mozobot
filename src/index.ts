@@ -10,7 +10,7 @@ async function initialiseBot() {
   try {
     await loadCommands();
     await loadEvents(client, getCommands());
-    // await registerSlashCommands();
+    await registerSlashCommands();
     await client.login(config.botToken);
   } catch (err) {
     console.log(err);
