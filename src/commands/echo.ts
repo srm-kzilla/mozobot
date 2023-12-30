@@ -6,8 +6,6 @@ import {
   SlashCommandChannelOption,
   TextInputBuilder,
   TextInputStyle,
-  EmbedBuilder,
-  ColorResolvable,
 } from 'discord.js';
 import { Command } from '../interface';
 import db from '../utils/database';
