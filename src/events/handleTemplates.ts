@@ -18,7 +18,7 @@ export default {
       } else if (interaction.customId === 'chooseTemplate') {
         const templateID = interaction.values[0];
         await interaction.reply({
-          content: `Use \`/announce\` or \`/echo\` command and provide with this \`${templateID}\` to use it.`,
+          content: `Use \`/announce\` or \`/echo\` command and provide with this \`${templateID}\` to use this template directly`,
         });
       }
     }
