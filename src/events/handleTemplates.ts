@@ -7,7 +7,7 @@ export default {
   name: Events.InteractionCreate,
   once: false,
 
-  async execute(interaction: Interaction, commands: Collection<string, Command>) {
+  async execute(interaction: Interaction) {
     if (interaction.isStringSelectMenu()) {
       if (interaction.customId === 'deleteTemplate') {
         const templateID = interaction.values[0];
