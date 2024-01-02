@@ -15,26 +15,29 @@ export default {
 
     const [cmd, channelID] = interaction.customId.split('-');
 
-
-
     if (cmd === 'template') {
-
-      const data = await (await db()).collection('templates').find({guildId: interaction.guildId, isDeleted: false}).toArray();
+      const data = await (await db())
+        .collection('templates')
+        .find({ guildId: interaction.guildId, isDeleted: false })
+        .toArray();
       if (data.length >= 25) {
-        return interaction.reply({content: 'You can only have max 25 templates', ephemeral: true})
+        return interaction.reply({ content: 'You can only have max 25 templates', ephemeral: true });
       }
 
-      const templateExists = data.some((template) => template.title === title || template.description === description);
+      const templateExists = data.some(template => template.title === title || template.description === description);
 
       if (templateExists) {
-        return interaction.reply({ content: 'Template with the same title and description already exists', ephemeral: true });
+        return interaction.reply({
+          content: 'Template with the same title and description already exists',
+          ephemeral: true,
+        });
       }
-      
+
       await (await db()).collection<templateSchemaType>('templates').insertOne({
         title,
         description,
         guildId: interaction.guild.id,
-        isDeleted: false
+        isDeleted: false,
       });
       await interaction.reply({ content: 'Template added to database!' });
     } else {
