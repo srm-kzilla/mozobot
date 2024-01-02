@@ -13,6 +13,7 @@ import { Command } from '../interface';
 import { COLOR } from '../config/constant';
 import db from '../utils/database';
 import { ObjectId } from 'mongodb';
+import { templateSchemaType } from '../types';
 
 export default {
   data: new SlashCommandBuilder()
@@ -37,7 +38,9 @@ export default {
     const templateID = interaction.options.getString('template-id');
 
     if (templateID) {
-      const data = await (await db()).collection('templates').findOne({ _id: new ObjectId(templateID) });
+      const data = await (await db())
+        .collection<templateSchemaType>('templates')
+        .findOne({ _id: new ObjectId(templateID), isDeleted: false });
 
       if (!data) {
         await interaction.reply({ content: 'Did not find a template with that ID', ephemeral: true });
@@ -45,8 +48,8 @@ export default {
       }
 
       const embed = new EmbedBuilder()
-        .setTitle(data.Title)
-        .setDescription(data.Description)
+        .setTitle(data.title)
+        .setDescription(data.description)
         .setColor(COLOR.WHITE as ColorResolvable);
 
       const channel = interaction.guild.channels.cache.get(channelID);
