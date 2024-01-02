@@ -9,8 +9,6 @@ import {
 } from 'discord.js';
 import { Command } from '../interface';
 import db from '../utils/database';
-import { templateSchemaType } from '../types';
-import { ObjectId } from 'mongodb';
 export default {
   data: new SlashCommandBuilder()
     .setName('template')
@@ -75,7 +73,7 @@ export default {
       const actionRow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu);
       await interaction.reply({ content: 'Select a template to delete:', components: [actionRow], ephemeral: true });
     } else if (subcommand === 'list') {
-      let data = await (
+      const data = await (
         await db()
       )
         .collection('templates')
