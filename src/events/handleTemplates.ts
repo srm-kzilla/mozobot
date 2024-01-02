@@ -1,5 +1,4 @@
-import { Collection, Events, Interaction } from 'discord.js';
-import { Command } from '../interface';
+import { Events, Interaction } from 'discord.js';
 import db from '../utils/database';
 import { ObjectId } from 'mongodb';
 
@@ -13,7 +12,10 @@ export default {
         const templateID = interaction.values[0];
 
         const collection = (await db()).collection('templates');
-        await collection.deleteOne({ _id: new ObjectId(templateID) });
+        const query = { _id: new ObjectId(templateID) };
+        const update = { $set: { isDeleted: true } };
+
+        await collection.updateOne(query, update);
         await interaction.reply('Successfully Deleted');
       } else if (interaction.customId === 'chooseTemplate') {
         const templateID = interaction.values[0];
