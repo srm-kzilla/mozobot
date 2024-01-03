@@ -10,7 +10,7 @@ import {
 import { Command } from '../interface';
 import db from '../utils/database';
 import { ObjectId } from 'mongodb';
-import { templateSchemaType } from '../types';
+import { TemplateSchemaType } from '../types';
 
 export default {
   data: new SlashCommandBuilder()
@@ -25,23 +25,23 @@ export default {
         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement);
     })
     .addStringOption(option =>
-      option.setName('template-id').setDescription('The template you want to use').setRequired(false),
+      option.setName('id').setDescription('The template you want to use').setRequired(false),
     ) as SlashCommandBuilder,
 
   async execute(interaction) {
     if (!interaction.guild) return;
-    const channelID = (interaction.options.getChannel('channel')?.id || interaction.channelId) as string;
-    const templateID = interaction.options.getString('template-id');
-    if (templateID) {
+    const channelId = (interaction.options.getChannel('channel')?.id || interaction.channelId) as string;
+    const templateId = interaction.options.getString('id');
+    if (templateId) {
       const data = await (await db())
-        .collection<templateSchemaType>('templates')
-        .findOne({ _id: new ObjectId(templateID), isDeleted: false });
+        .collection<TemplateSchemaType>('templates')
+        .findOne({ _id: new ObjectId(templateId), isDeleted: false });
 
       if (!data) {
         await interaction.reply({ content: 'Did not find a template with that ID', ephemeral: true });
         return;
       }
-      const channel = interaction.guild.channels.cache.get(channelID);
+      const channel = interaction.guild.channels.cache.get(channelId);
 
       if (!channel) {
         await interaction.reply({ content: 'Target Channel Not Found', ephemeral: true });
@@ -67,7 +67,7 @@ export default {
 
     const firstActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Title);
     const secondActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Description);
-    const modal = new ModalBuilder().setCustomId(`echo-${channelID}`).setTitle('Echo Modal');
+    const modal = new ModalBuilder().setCustomId(`echo-${channelId}`).setTitle('Echo Modal');
     modal.addComponents(firstActionRow, secondActionRow);
     await interaction.showModal(modal);
   },
