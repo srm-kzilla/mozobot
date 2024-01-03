@@ -13,7 +13,7 @@ export default {
     const title = interaction.fields.getTextInputValue('Title');
     const description = interaction.fields.getTextInputValue('Description');
 
-    const [action, channelID] = interaction.customId.split('-');
+    const [action, channelId] = interaction.customId.split('-');
 
     if (action === 'template') {
       const data = await (await db())
@@ -41,9 +41,9 @@ export default {
       });
       await interaction.reply({ content: 'Template added to database!' });
     } else {
-      if (!action || !channelID) return;
+      if (!action || !channelId) return;
 
-      const channel = interaction.guild.channels.cache.get(channelID);
+      const channel = interaction.guild.channels.cache.get(channelId);
 
       if (!channel) {
         await interaction.reply({ content: 'Target Channel Not Found', ephemeral: true });

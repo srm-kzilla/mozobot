@@ -9,10 +9,10 @@ export default {
   async execute(interaction: Interaction) {
     if (interaction.isStringSelectMenu()) {
       if (interaction.customId === 'deleteTemplate') {
-        const templateID = interaction.values[0];
+        const templateId = interaction.values[0];
 
         const collection = (await db()).collection('templates');
-        const query = { _id: new ObjectId(templateID) };
+        const query = { _id: new ObjectId(templateId) };
         const update = { $set: { isDeleted: true } };
 
         await collection.updateOne(query, update);
