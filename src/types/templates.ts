@@ -9,4 +9,4 @@ export const templateSchema = z.object({
   isDeleted: z.boolean(),
 });
 
-export type templateSchemaType = z.infer<typeof templateSchema>;
+export type TemplateSchemaType = z.infer<typeof templateSchema>;
