@@ -56,6 +56,7 @@ export default {
           content: 'No Templates found! use `/template create` to create one!',
           ephemeral: true,
         });
+        return;
       }
 
       const templatesData = data.map(data => ({
@@ -87,6 +88,7 @@ export default {
           content: 'No Templates found! use `/template create` to create one!',
           ephemeral: true,
         });
+        return;
       }
 
       const templatesData = data.map(data => ({
