@@ -18,9 +18,9 @@ export default {
         await collection.updateOne(query, update);
         await interaction.reply('Successfully Deleted');
       } else if (interaction.customId === 'chooseTemplate') {
-        const templateID = interaction.values[0];
+        const templateId = interaction.values[0];
         await interaction.reply({
-          content: `Use \`/announce\` or \`/echo\` command and provide with this \`${templateID}\` to use this template directly`,
+          content: `Use \`/announce\` or \`/echo\` command and provide with this \`${templateId}\` to use this template directly`,
         });
       }
     }
