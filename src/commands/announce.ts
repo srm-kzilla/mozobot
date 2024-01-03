@@ -6,8 +6,14 @@ import {
   SlashCommandChannelOption,
   TextInputBuilder,
   TextInputStyle,
+  EmbedBuilder,
+  ColorResolvable,
 } from 'discord.js';
 import { Command } from '../interface';
+import { COLOR } from '../config/constant';
+import db from '../utils/database';
+import { ObjectId } from 'mongodb';
+import { TemplateSchemaType } from '../types';
 
 export default {
   data: new SlashCommandBuilder()
@@ -20,11 +26,51 @@ export default {
         .setDescription('Channel to announce to')
         .setRequired(true)
         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement);
-    }) as SlashCommandBuilder,
+    })
+    .addStringOption(option =>
+      option.setName('id').setDescription('The template you want to use').setRequired(false),
+    ) as SlashCommandBuilder,
 
   async execute(interaction) {
-    const channelID = (interaction.options.getChannel('channel')?.id || interaction.channelId) as string;
-    const modal = new ModalBuilder().setCustomId(`announce-${channelID}`).setTitle('Announcements');
+    if (!interaction.guild) return;
+
+    const channelId = (interaction.options.getChannel('channel')?.id || interaction.channelId) as string;
+    const templateId = interaction.options.getString('id');
+
+    if (templateId) {
+      const data = await (await db())
+        .collection<TemplateSchemaType>('templates')
+        .findOne({ _id: new ObjectId(templateId), isDeleted: false });
+
+      if (!data) {
+        await interaction.reply({ content: 'Did not find a template with that ID', ephemeral: true });
+        return;
+      }
+
+      const embed = new EmbedBuilder()
+        .setTitle(data.title)
+        .setDescription(data.description)
+        .setColor(COLOR.WHITE as ColorResolvable);
+
+      const channel = interaction.guild.channels.cache.get(channelId);
+
+      if (!channel) {
+        await interaction.reply({ content: 'Target Channel Not Found', ephemeral: true });
+        return;
+      }
+
+      if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement) {
+        await interaction.reply({ content: 'Invalid Channel Provided. Please Provide a text channel' });
+        return;
+      }
+
+      await channel.send({ embeds: [embed] });
+
+      await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
+      return;
+    }
+
+    const modal = new ModalBuilder().setCustomId(`announce-${channelId}`).setTitle('Announcements');
     const Title = new TextInputBuilder()
       .setCustomId('Title')
       .setLabel('Provide us with the Title')
@@ -33,6 +79,7 @@ export default {
       .setCustomId('Description')
       .setLabel('Provide us with some Description')
       .setStyle(TextInputStyle.Paragraph);
+
     const firstActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Title);
     const secondActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Description);
     modal.addComponents(firstActionRow, secondActionRow);
