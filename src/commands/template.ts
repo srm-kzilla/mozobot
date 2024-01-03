@@ -51,7 +51,6 @@ export default {
         .find({ guildId: interaction.guildId, isDeleted: false })
         .toArray();
 
-      // !data
       if (data.length === 0) {
         await interaction.reply({
           content: 'No Templates found! use `/template create` to create one!',
