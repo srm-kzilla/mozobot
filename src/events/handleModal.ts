@@ -1,7 +1,7 @@
 import { ChannelType, ColorResolvable, EmbedBuilder, Events, Interaction } from 'discord.js';
 import { COLOR } from '../config/constant';
 import db from '../utils/database';
-import { templateSchemaType } from '../types';
+import { TemplateSchemaType } from '../types';
 
 export default {
   name: Events.InteractionCreate,
@@ -13,9 +13,9 @@ export default {
     const title = interaction.fields.getTextInputValue('Title');
     const description = interaction.fields.getTextInputValue('Description');
 
-    const [cmd, channelID] = interaction.customId.split('-');
+    const [action, channelID] = interaction.customId.split('-');
 
-    if (cmd === 'template') {
+    if (action === 'template') {
       const data = await (await db())
         .collection('templates')
         .find({ guildId: interaction.guildId, isDeleted: false })
@@ -33,7 +33,7 @@ export default {
         });
       }
 
-      await (await db()).collection<templateSchemaType>('templates').insertOne({
+      await (await db()).collection<TemplateSchemaType>('templates').insertOne({
         title,
         description,
         guildId: interaction.guild.id,
@@ -41,7 +41,7 @@ export default {
       });
       await interaction.reply({ content: 'Template added to database!' });
     } else {
-      if (!cmd || !channelID) return;
+      if (!action || !channelID) return;
 
       const channel = interaction.guild.channels.cache.get(channelID);
 
@@ -55,7 +55,7 @@ export default {
         return;
       }
 
-      if (cmd === 'announce') {
+      if (action === 'announce') {
         const embed = new EmbedBuilder()
           .setTitle(title)
           .setDescription(description)
@@ -63,7 +63,7 @@ export default {
 
         await channel.send({ embeds: [embed] });
         await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
-      } else if (cmd === 'echo') {
+      } else if (action === 'echo') {
         await channel.send({ content: `# ${title}\n${description}` });
         await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
       }
