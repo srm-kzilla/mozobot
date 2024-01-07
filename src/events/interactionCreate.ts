@@ -1,5 +1,5 @@
-import { Collection, Events, Interaction } from 'discord.js';
-import { Command } from '../interface';
+import { Collection, Events, Interaction } from "discord.js";
+import { Command } from "../interface";
 
 export default {
   name: Events.InteractionCreate,
@@ -10,8 +10,8 @@ export default {
 
     const command = commands.get(interaction.commandName);
     if (!command) {
-      console.log('Command not found here', commands);
-      await interaction.reply({ content: 'Command not found', ephemeral: true });
+      console.log("Command not found here", commands);
+      await interaction.reply({ content: "Command not found", ephemeral: true });
       return;
     }
 
@@ -20,7 +20,7 @@ export default {
     } catch (err) {
       console.error(err);
       await interaction.reply({
-        content: 'There was an error while executing this command!',
+        content: "There was an error while executing this command!",
         ephemeral: true,
       });
     }

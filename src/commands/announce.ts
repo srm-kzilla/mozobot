@@ -8,42 +8,42 @@ import {
   TextInputStyle,
   EmbedBuilder,
   ColorResolvable,
-} from 'discord.js';
-import { Command } from '../interface';
-import { COLOR } from '../config/constant';
-import db from '../utils/database';
-import { ObjectId } from 'mongodb';
-import { TemplateSchemaType } from '../types';
+} from "discord.js";
+import { Command } from "../interface";
+import { COLOR } from "../config/constant";
+import db from "../utils/database";
+import { ObjectId } from "mongodb";
+import { TemplateSchemaType } from "../types";
 
 export default {
   data: new SlashCommandBuilder()
-    .setName('announce')
-    .setDescription('announcement the world something')
+    .setName("announce")
+    .setDescription("announcement the world something")
     .setDMPermission(false)
     .addChannelOption((option: SlashCommandChannelOption) => {
       return option
-        .setName('channel')
-        .setDescription('Channel to announce to')
+        .setName("channel")
+        .setDescription("Channel to announce to")
         .setRequired(true)
         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement);
     })
     .addStringOption(option =>
-      option.setName('id').setDescription('The template you want to use').setRequired(false),
+      option.setName("id").setDescription("The template you want to use").setRequired(false),
     ) as SlashCommandBuilder,
 
   async execute(interaction) {
     if (!interaction.guild) return;
 
-    const channelId = (interaction.options.getChannel('channel')?.id || interaction.channelId) as string;
-    const templateId = interaction.options.getString('id');
+    const channelId = (interaction.options.getChannel("channel")?.id || interaction.channelId) as string;
+    const templateId = interaction.options.getString("id");
 
     if (templateId) {
       const data = await (await db())
-        .collection<TemplateSchemaType>('templates')
+        .collection<TemplateSchemaType>("templates")
         .findOne({ _id: new ObjectId(templateId), isDeleted: false });
 
       if (!data) {
-        await interaction.reply({ content: 'Did not find a template with that ID', ephemeral: true });
+        await interaction.reply({ content: "Did not find a template with that ID", ephemeral: true });
         return;
       }
 
@@ -55,12 +55,12 @@ export default {
       const channel = interaction.guild.channels.cache.get(channelId);
 
       if (!channel) {
-        await interaction.reply({ content: 'Target Channel Not Found', ephemeral: true });
+        await interaction.reply({ content: "Target Channel Not Found", ephemeral: true });
         return;
       }
 
       if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement) {
-        await interaction.reply({ content: 'Invalid Channel Provided. Please Provide a text channel' });
+        await interaction.reply({ content: "Invalid Channel Provided. Please Provide a text channel" });
         return;
       }
 
@@ -70,14 +70,14 @@ export default {
       return;
     }
 
-    const modal = new ModalBuilder().setCustomId(`announce-${channelId}`).setTitle('Announcements');
+    const modal = new ModalBuilder().setCustomId(`announce-${channelId}`).setTitle("Announcements");
     const Title = new TextInputBuilder()
-      .setCustomId('Title')
-      .setLabel('Provide us with the Title')
+      .setCustomId("Title")
+      .setLabel("Provide us with the Title")
       .setStyle(TextInputStyle.Short);
     const Description = new TextInputBuilder()
-      .setCustomId('Description')
-      .setLabel('Provide us with some Description')
+      .setCustomId("Description")
+      .setLabel("Provide us with some Description")
       .setStyle(TextInputStyle.Paragraph);
 
     const firstActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Title);
