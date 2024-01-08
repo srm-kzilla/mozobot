@@ -11,6 +11,7 @@ import { Command } from "../interface";
 import db from "../utils/database";
 import { ObjectId } from "mongodb";
 import { TemplateSchemaType } from "../types";
+import { VALUE } from "../config/constant";
 
 export default {
   data: new SlashCommandBuilder()
@@ -24,14 +25,24 @@ export default {
         .setRequired(true)
         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement);
     })
+    .addStringOption(option => option.setName("id").setDescription("The template you want to use").setRequired(false))
     .addStringOption(option =>
-      option.setName("id").setDescription("The template you want to use").setRequired(false),
+      option
+        .setName("mention")
+        .setDescription("Who to mention")
+        .setRequired(false)
+        .addChoices(
+          { name: "@here", value: "@here" },
+          { name: "@everyone", value: "@everyone" },
+          { name: "none", value: "none" },
+        ),
     ) as SlashCommandBuilder,
 
   async execute(interaction) {
     if (!interaction.guild) return;
     const channelId = (interaction.options.getChannel("channel")?.id || interaction.channelId) as string;
     const templateId = interaction.options.getString("id");
+    const mention = interaction.options.getString("mention") || VALUE.NONE;
     if (templateId) {
       const data = await (await db())
         .collection<TemplateSchemaType>("templates")
@@ -52,6 +63,13 @@ export default {
         await interaction.reply({ content: "Invalid Channel Provided. Please Provide a text channel" });
         return;
       }
+
+      if (mention === "@here" || mention === "@everyone") {
+        await channel.send({ content: `${mention}\n# ${data.title}\n${data.description}` });
+        await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
+        return;
+      }
+
       await channel.send({ content: `# ${data.title}\n${data.description}` });
       await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
       return;
@@ -67,7 +85,7 @@ export default {
 
     const firstActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Title);
     const secondActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Description);
-    const modal = new ModalBuilder().setCustomId(`echo-${channelId}`).setTitle("Echo Modal");
+    const modal = new ModalBuilder().setCustomId(`echo-${channelId}-${mention}`).setTitle("Echo Modal");
     modal.addComponents(firstActionRow, secondActionRow);
     await interaction.showModal(modal);
   },

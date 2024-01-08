@@ -13,7 +13,7 @@ export default {
     const title = interaction.fields.getTextInputValue("Title");
     const description = interaction.fields.getTextInputValue("Description");
 
-    const [action, channelId] = interaction.customId.split("-");
+    const [action, channelId, mention] = interaction.customId.split("-");
 
     if (action === "template") {
       const data = await (await db())
@@ -61,9 +61,21 @@ export default {
           .setDescription(description)
           .setColor(COLOR.WHITE as ColorResolvable);
 
+        if (mention === "@here" || mention === "@everyone") {
+          await channel.send({ content: `${mention}`, embeds: [embed] });
+          await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
+          return;
+        }
+
         await channel.send({ embeds: [embed] });
         await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
       } else if (action === "echo") {
+        if (mention === "@here" || mention === "@everyone") {
+          await channel.send({ content: `${mention}\n# ${title}\n${description}` });
+          await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
+          return;
+        }
+
         await channel.send({ content: `# ${title}\n${description}` });
         await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
       }

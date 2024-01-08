@@ -10,7 +10,7 @@ import {
   ColorResolvable,
 } from "discord.js";
 import { Command } from "../interface";
-import { COLOR } from "../config/constant";
+import { COLOR, VALUE } from "../config/constant";
 import db from "../utils/database";
 import { ObjectId } from "mongodb";
 import { TemplateSchemaType } from "../types";
@@ -27,8 +27,17 @@ export default {
         .setRequired(true)
         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement);
     })
+    .addStringOption(option => option.setName("id").setDescription("The template you want to use").setRequired(false))
     .addStringOption(option =>
-      option.setName("id").setDescription("The template you want to use").setRequired(false),
+      option
+        .setName("mention")
+        .setDescription("Who to mention")
+        .setRequired(false)
+        .addChoices(
+          { name: "@here", value: "@here" },
+          { name: "@everyone", value: "@everyone" },
+          { name: "none", value: "none" },
+        ),
     ) as SlashCommandBuilder,
 
   async execute(interaction) {
@@ -36,6 +45,7 @@ export default {
 
     const channelId = (interaction.options.getChannel("channel")?.id || interaction.channelId) as string;
     const templateId = interaction.options.getString("id");
+    const mention = interaction.options.getString("mention") || VALUE.NONE;
 
     if (templateId) {
       const data = await (await db())
@@ -64,13 +74,19 @@ export default {
         return;
       }
 
+      if (mention === "@here" || mention === "@everyone") {
+        await channel.send({ content: `${mention}`, embeds: [embed] });
+        await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
+        return;
+      }
+
       await channel.send({ embeds: [embed] });
 
       await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
       return;
     }
 
-    const modal = new ModalBuilder().setCustomId(`announce-${channelId}`).setTitle("Announcements");
+    const modal = new ModalBuilder().setCustomId(`announce-${channelId}-${mention}`).setTitle("Announcements");
     const Title = new TextInputBuilder()
       .setCustomId("Title")
       .setLabel("Provide us with the Title")
