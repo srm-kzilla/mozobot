@@ -42,7 +42,7 @@ export default {
     if (!interaction.guild) return;
     const channelId = (interaction.options.getChannel("channel")?.id || interaction.channelId) as string;
     const templateId = interaction.options.getString("id");
-    const mention = interaction.options.getString("mention") || VALUE.NULL;
+    const mention = interaction.options.getString("mention") || VALUE.NONE;
     if (templateId) {
       const data = await (await db())
         .collection<TemplateSchemaType>("templates")

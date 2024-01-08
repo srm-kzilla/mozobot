@@ -3,5 +3,5 @@ export const COLOR = {
 };
 
 export const VALUE = {
-  NULL: "null",
+  NONE: "none",
 };
