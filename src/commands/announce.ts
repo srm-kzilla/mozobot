@@ -10,7 +10,7 @@ import {
   ColorResolvable,
 } from "discord.js";
 import { Command } from "../interface";
-import { COLOR, VALUE } from "../config/constant";
+import { COLOR } from "../config/constant";
 import db from "../utils/database";
 import { ObjectId } from "mongodb";
 import { TemplateSchemaType } from "../types";
@@ -34,8 +34,8 @@ export default {
         .setDescription("Who to mention")
         .setRequired(false)
         .addChoices(
-          { name: "@here", value: "@here" },
-          { name: "@everyone", value: "@everyone" },
+          { name: "here", value: "here" },
+          { name: "everyone", value: "everyone" },
           { name: "none", value: "none" },
         ),
     ) as SlashCommandBuilder,
@@ -45,7 +45,7 @@ export default {
 
     const channelId = (interaction.options.getChannel("channel")?.id || interaction.channelId) as string;
     const templateId = interaction.options.getString("id");
-    const mention = interaction.options.getString("mention") || VALUE.NONE;
+    const mention = interaction.options.getString("mention") || "none";
 
     if (templateId) {
       const data = await (await db())
@@ -74,8 +74,8 @@ export default {
         return;
       }
 
-      if (mention === "@here" || mention === "@everyone") {
-        await channel.send({ content: `${mention}`, embeds: [embed] });
+      if (mention !== "none") {
+        await channel.send({ content: `@${mention}`, embeds: [embed] });
         await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
         return;
       }

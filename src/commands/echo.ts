@@ -11,7 +11,6 @@ import { Command } from "../interface";
 import db from "../utils/database";
 import { ObjectId } from "mongodb";
 import { TemplateSchemaType } from "../types";
-import { VALUE } from "../config/constant";
 
 export default {
   data: new SlashCommandBuilder()
@@ -32,8 +31,8 @@ export default {
         .setDescription("Who to mention")
         .setRequired(false)
         .addChoices(
-          { name: "@here", value: "@here" },
-          { name: "@everyone", value: "@everyone" },
+          { name: "here", value: "here" },
+          { name: "everyone", value: "everyone" },
           { name: "none", value: "none" },
         ),
     ) as SlashCommandBuilder,
@@ -42,7 +41,7 @@ export default {
     if (!interaction.guild) return;
     const channelId = (interaction.options.getChannel("channel")?.id || interaction.channelId) as string;
     const templateId = interaction.options.getString("id");
-    const mention = interaction.options.getString("mention") || VALUE.NONE;
+    const mention = interaction.options.getString("mention") || "none";
     if (templateId) {
       const data = await (await db())
         .collection<TemplateSchemaType>("templates")
@@ -64,8 +63,8 @@ export default {
         return;
       }
 
-      if (mention === "@here" || mention === "@everyone") {
-        await channel.send({ content: `${mention}\n# ${data.title}\n${data.description}` });
+      if (mention !== "none") {
+        await channel.send({ content: `@${mention}\n# ${data.title}\n${data.description}` });
         await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
         return;
       }

@@ -61,8 +61,8 @@ export default {
           .setDescription(description)
           .setColor(COLOR.WHITE as ColorResolvable);
 
-        if (mention === "@here" || mention === "@everyone") {
-          await channel.send({ content: `${mention}`, embeds: [embed] });
+        if (mention !== "none") {
+          await channel.send({ content: `@${mention}`, embeds: [embed] });
           await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
           return;
         }
@@ -70,8 +70,8 @@ export default {
         await channel.send({ embeds: [embed] });
         await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
       } else if (action === "echo") {
-        if (mention === "@here" || mention === "@everyone") {
-          await channel.send({ content: `${mention}\n# ${title}\n${description}` });
+        if (mention !== "none") {
+          await channel.send({ content: `@${mention}\n# ${title}\n${description}` });
           await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
           return;
         }
