@@ -26,15 +26,7 @@ export default {
     })
     .addStringOption(option => option.setName("id").setDescription("The template you want to use").setRequired(false))
     .addStringOption(option =>
-      option
-        .setName("mention")
-        .setDescription("Who to mention")
-        .setRequired(false)
-        .addChoices(
-          { name: "here", value: "here" },
-          { name: "everyone", value: "everyone" },
-          { name: "none", value: "none" },
-        ),
+      option.setName("mention").setDescription("Who to mention").setRequired(false),
     ) as SlashCommandBuilder,
 
   async execute(interaction) {
@@ -64,13 +56,13 @@ export default {
       }
 
       if (mention !== "none") {
-        await channel.send({ content: `@${mention}\n# ${data.title}\n${data.description}` });
-        await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
+        await channel.send({ content: `${mention}\n# ${data.title}\n${data.description}` });
+        await interaction.reply({ content: `Message sent to <#${channel.id}>` });
         return;
       }
 
       await channel.send({ content: `# ${data.title}\n${data.description}` });
-      await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
+      await interaction.reply({ content: `Message sent to <#${channel.id}>` });
       return;
     }
     const Title = new TextInputBuilder()
