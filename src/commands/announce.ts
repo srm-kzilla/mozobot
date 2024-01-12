@@ -60,7 +60,9 @@ export default {
       const embed = new EmbedBuilder()
         .setTitle(data.title)
         .setDescription(data.description)
-        .setColor(COLOR.WHITE as ColorResolvable);
+        .setColor(COLOR.WHITE as ColorResolvable)
+        .setTimestamp()
+        .setFooter({ text: "Made with 💖 | SRMKZILLA" });
 
       const channel = interaction.guild.channels.cache.get(channelId);
 

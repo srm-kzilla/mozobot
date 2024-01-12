@@ -59,7 +59,9 @@ export default {
         const embed = new EmbedBuilder()
           .setTitle(title)
           .setDescription(description)
-          .setColor(COLOR.WHITE as ColorResolvable);
+          .setColor(COLOR.WHITE as ColorResolvable)
+          .setTimestamp()
+          .setFooter({ text: "Made with 💖 | SRMKZILLA" });
 
         if (mention !== "none") {
           await channel.send({ content: `@${mention}`, embeds: [embed] });
