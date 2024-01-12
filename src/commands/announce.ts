@@ -92,11 +92,13 @@ export default {
     const Title = new TextInputBuilder()
       .setCustomId("Title")
       .setLabel("Provide us with the Title")
-      .setStyle(TextInputStyle.Short);
+      .setStyle(TextInputStyle.Short)
+      .setMaxLength(50);
     const Description = new TextInputBuilder()
       .setCustomId("Description")
       .setLabel("Provide us with some Description")
-      .setStyle(TextInputStyle.Paragraph);
+      .setStyle(TextInputStyle.Paragraph)
+      .setMaxLength(1900);
 
     const firstActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Title);
     const secondActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Description);
