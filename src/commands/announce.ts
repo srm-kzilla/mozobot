@@ -10,7 +10,7 @@ import {
   ColorResolvable,
 } from "discord.js";
 import { Command } from "../interface";
-import { COLOR } from "../config/constant";
+import { COLOR, FOOTER_VALUE } from "../config/constant";
 import db from "../utils/database";
 import { ObjectId } from "mongodb";
 import { TemplateSchemaType } from "../types";
@@ -29,15 +29,7 @@ export default {
     })
     .addStringOption(option => option.setName("id").setDescription("The template you want to use").setRequired(false))
     .addStringOption(option =>
-      option
-        .setName("mention")
-        .setDescription("Who to mention")
-        .setRequired(false)
-        .addChoices(
-          { name: "here", value: "here" },
-          { name: "everyone", value: "everyone" },
-          { name: "none", value: "none" },
-        ),
+      option.setName("mention").setDescription("Who to mention").setRequired(false),
     ) as SlashCommandBuilder,
 
   async execute(interaction) {
@@ -62,7 +54,7 @@ export default {
         .setDescription(data.description)
         .setColor(COLOR.WHITE as ColorResolvable)
         .setTimestamp()
-        .setFooter({ text: "Made with 💖 | SRMKZILLA" });
+        .setFooter({ text: FOOTER_VALUE });
 
       const channel = interaction.guild.channels.cache.get(channelId);
 
@@ -77,14 +69,14 @@ export default {
       }
 
       if (mention !== "none") {
-        await channel.send({ content: `@${mention}`, embeds: [embed] });
-        await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
+        await channel.send({ content: `${mention}`, embeds: [embed] });
+        await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
         return;
       }
 
       await channel.send({ embeds: [embed] });
 
-      await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
+      await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
       return;
     }
 
@@ -92,11 +84,13 @@ export default {
     const Title = new TextInputBuilder()
       .setCustomId("Title")
       .setLabel("Provide us with the Title")
-      .setStyle(TextInputStyle.Short);
+      .setStyle(TextInputStyle.Short)
+      .setMaxLength(50);
     const Description = new TextInputBuilder()
       .setCustomId("Description")
       .setLabel("Provide us with some Description")
-      .setStyle(TextInputStyle.Paragraph);
+      .setStyle(TextInputStyle.Paragraph)
+      .setMaxLength(1900);
 
     const firstActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Title);
     const secondActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Description);

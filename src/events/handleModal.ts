@@ -1,5 +1,5 @@
 import { ChannelType, ColorResolvable, EmbedBuilder, Events, Interaction } from "discord.js";
-import { COLOR } from "../config/constant";
+import { COLOR, FOOTER_VALUE } from "../config/constant";
 import db from "../utils/database";
 import { TemplateSchemaType } from "../types";
 
@@ -61,25 +61,25 @@ export default {
           .setDescription(description)
           .setColor(COLOR.WHITE as ColorResolvable)
           .setTimestamp()
-          .setFooter({ text: "Made with 💖 | SRMKZILLA" });
+          .setFooter({ text: FOOTER_VALUE });
 
         if (mention !== "none") {
-          await channel.send({ content: `@${mention}`, embeds: [embed] });
-          await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
+          await channel.send({ content: `${mention}`, embeds: [embed] });
+          await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
           return;
         }
 
         await channel.send({ embeds: [embed] });
-        await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
+        await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
       } else if (action === "echo") {
         if (mention !== "none") {
-          await channel.send({ content: `@${mention}\n# ${title}\n${description}` });
-          await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
+          await channel.send({ content: `${mention}\n# ${title}\n${description}` });
+          await interaction.reply({ content: `Message sent to <#${channel.id}>` });
           return;
         }
 
         await channel.send({ content: `# ${title}\n${description}` });
-        await interaction.reply({ content: `Announcement sent to <#${channel.id}>` });
+        await interaction.reply({ content: `Message sent to <#${channel.id}>` });
       }
     }
   },
