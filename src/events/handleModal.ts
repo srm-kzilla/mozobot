@@ -64,7 +64,7 @@ export default {
           .setFooter({ text: FOOTER_VALUE });
 
         if (mention !== "none") {
-          await channel.send({ content: `${mention}`, embeds: [embed] });
+          await channel.send({ content: `📢 Announcement ${mention}`, embeds: [embed] });
           await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
           return;
         }
@@ -73,7 +73,7 @@ export default {
         await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
       } else if (action === "echo") {
         if (mention !== "none") {
-          await channel.send({ content: `${mention}\n# ${title}\n${description}` });
+          await channel.send({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
           await interaction.reply({ content: `Message sent to <#${channel.id}>` });
           return;
         }
