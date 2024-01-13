@@ -69,7 +69,7 @@ export default {
       }
 
       if (mention !== "none") {
-        await channel.send({ content: `${mention}`, embeds: [embed] });
+        await channel.send({ content: `📢 Announcement ${mention}`, embeds: [embed] });
         await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
         return;
       }

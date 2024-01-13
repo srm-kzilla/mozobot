@@ -56,7 +56,7 @@ export default {
       }
 
       if (mention !== "none") {
-        await channel.send({ content: `${mention}\n# ${data.title}\n${data.description}` });
+        await channel.send({ content: `📢 Announcement ${mention}\n# ${data.title}\n${data.description}` });
         await interaction.reply({ content: `Message sent to <#${channel.id}>` });
         return;
       }
