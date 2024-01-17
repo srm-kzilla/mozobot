@@ -95,7 +95,7 @@ export default {
       .setCustomId("Image")
       .setLabel("Provide us with the Image")
       .setStyle(TextInputStyle.Paragraph)
-      .setMinLength(0)
+      .setMinLength(10)
       .setMaxLength(4000)
       .setRequired(false);
 
