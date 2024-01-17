@@ -3,6 +3,25 @@ import { COLOR, FOOTER_VALUE } from "../config/constant";
 import db from "../utils/database";
 import { TemplateSchemaType } from "../types";
 
+async function isValidImageUrl(url: string): Promise<boolean> {
+  try {
+    const response = await fetch(url, { method: "HEAD" });
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const contentType = response.headers.get("Content-Type");
+    if (!contentType || !contentType.startsWith("image/")) {
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 export default {
   name: Events.InteractionCreate,
   once: false,
@@ -56,6 +75,7 @@ export default {
       }
 
       if (action === "announce") {
+        const embeds: EmbedBuilder[] = [];
         const embed = new EmbedBuilder()
           .setTitle(title)
           .setDescription(description)
@@ -63,13 +83,36 @@ export default {
           .setTimestamp()
           .setFooter({ text: FOOTER_VALUE });
 
+        const image = interaction.fields.getTextInputValue("Image") || "none";
+        if (image === "none") {
+          if (mention === "none") {
+            await channel.send({ embeds: [embed] });
+            await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
+            return;
+          } else {
+            await channel.send({ content: `📢 Announcement ${mention}`, embeds: [embed] });
+            await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
+            return;
+          }
+        }
+        const images = image.split("\n");
+        const validImages = images.filter(url => isValidImageUrl(url));
+
+        if (validImages.length > 0) {
+          embed.setImage(validImages.shift()!);
+        }
+        embeds.push(embed);
+
+        validImages.forEach(url => {
+          const newEmbed = new EmbedBuilder().setImage(url).setColor(COLOR.WHITE as ColorResolvable);
+          embeds.push(newEmbed);
+        });
         if (mention !== "none") {
-          await channel.send({ content: `📢 Announcement ${mention}`, embeds: [embed] });
+          await channel.send({ content: `📢 Announcement ${mention}`, embeds: embeds });
           await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
           return;
         }
-
-        await channel.send({ embeds: [embed] });
+        await channel.send({ embeds: embeds });
         await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
       } else if (action === "echo") {
         if (mention !== "none") {

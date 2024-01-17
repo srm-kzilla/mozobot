@@ -91,10 +91,18 @@ export default {
       .setLabel("Provide us with some Description")
       .setStyle(TextInputStyle.Paragraph)
       .setMaxLength(1900);
+    const Image = new TextInputBuilder()
+      .setCustomId("Image")
+      .setLabel("Provide us with the Image")
+      .setStyle(TextInputStyle.Paragraph)
+      .setMinLength(0)
+      .setMaxLength(4000)
+      .setRequired(false);
 
     const firstActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Title);
     const secondActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Description);
-    modal.addComponents(firstActionRow, secondActionRow);
+    const thirdActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Image);
+    modal.addComponents(firstActionRow, secondActionRow, thirdActionRow);
     await interaction.showModal(modal);
   },
 } as Command;
