@@ -87,19 +87,20 @@ export default {
         if (image === "none") {
           if (mention === "none") {
             await channel.send({ embeds: [embed] });
-            await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
-            return;
           } else {
             await channel.send({ content: `📢 Announcement ${mention}`, embeds: [embed] });
-            await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
-            return;
           }
+          await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
+          return;
         }
         const images = image.split("\n");
         const validImages = images.filter(url => isValidImageUrl(url));
 
         if (validImages.length > 0) {
-          embed.setImage(validImages.shift()!);
+          const firstImage = validImages.shift();
+          if (firstImage) {
+            embed.setImage(firstImage);
+          }
         }
         embeds.push(embed);
 
