@@ -92,7 +92,7 @@ export default {
       .setStyle(TextInputStyle.Paragraph)
       .setMaxLength(1900);
     const Image = new TextInputBuilder()
-      .setCustomId("Image")
+      .setCustomId("image")
       .setLabel("Provide us with the Image")
       .setStyle(TextInputStyle.Paragraph)
       .setMinLength(10)
