@@ -83,7 +83,7 @@ export default {
           .setTimestamp()
           .setFooter({ text: FOOTER_VALUE });
 
-        const image = interaction.fields.getTextInputValue("Image") || "none";
+        const image = interaction.fields.getTextInputValue("image") || "none";
         if (image === "none") {
           if (mention === "none") {
             await channel.send({ embeds: [embed] });
