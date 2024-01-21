@@ -6,9 +6,11 @@ import {
   ModalBuilder,
   StringSelectMenuBuilder,
   SlashCommandSubcommandBuilder,
+  ChannelType,
 } from "discord.js";
 import { Command } from "../interface";
 import db from "../utils/database";
+
 export default {
   data: new SlashCommandBuilder()
     .setName("template")
@@ -18,7 +20,16 @@ export default {
       subcommand.setName("create").setDescription("Creates Templates"),
     )
     .addSubcommand((subcommand: SlashCommandSubcommandBuilder) =>
-      subcommand.setName("list").setDescription("Provides us with the list"),
+      subcommand
+        .setName("list")
+        .setDescription("Provides us with the list")
+        .addChannelOption(option =>
+          option
+            .setName("channel")
+            .setDescription("Channel to announce to")
+            .setRequired(true)
+            .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement),
+        ),
     )
     .addSubcommand((subcommand: SlashCommandSubcommandBuilder) =>
       subcommand.setName("delete").setDescription("Deletes the Templates"),
@@ -42,10 +53,19 @@ export default {
         .setStyle(TextInputStyle.Paragraph)
         .setMaxLength(1900);
 
+      const Image = new TextInputBuilder()
+        .setCustomId("image")
+        .setLabel("Provide us with the Image")
+        .setStyle(TextInputStyle.Paragraph)
+        .setMinLength(10)
+        .setMaxLength(4000)
+        .setRequired(false);
+
       const firstActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Title);
       const secondActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Description);
+      const thirdActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Image);
 
-      modal.addComponents(firstActionRow, secondActionRow);
+      modal.addComponents(firstActionRow, secondActionRow, thirdActionRow);
       await interaction.showModal(modal);
     } else if (subcommand === "delete") {
       const data = await (await db())
@@ -92,11 +112,11 @@ export default {
         });
         return;
       }
-
+      const channelId = (interaction.options.getChannel("channel")?.id || interaction.channelId) as string;
       const templatesData = data.map(data => ({
         label: data.title.slice(0, 50),
         description: data.description.slice(0, 50),
-        value: data._id.toString(),
+        value: JSON.stringify({ templateId: data._id.toString(), channelId }),
       }));
 
       const selectMenu = new StringSelectMenuBuilder()

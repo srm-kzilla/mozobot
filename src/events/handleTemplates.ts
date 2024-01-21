@@ -1,4 +1,4 @@
-import { Events, Interaction } from "discord.js";
+import { Events, Interaction, ButtonBuilder, ButtonStyle, ActionRowBuilder } from "discord.js";
 import db from "../utils/database";
 import { ObjectId } from "mongodb";
 
@@ -18,9 +18,24 @@ export default {
         await collection.updateOne(query, update);
         await interaction.reply("Successfully Deleted");
       } else if (interaction.customId === "chooseTemplate") {
-        const templateId = interaction.values[0];
+        const { templateId, channelId } = JSON.parse(interaction.values[0] || "{}");
+        const announce = new ButtonBuilder()
+          .setCustomId(`announce-${templateId}-${channelId}`)
+          .setLabel("Announce")
+          .setStyle(ButtonStyle.Primary);
+        const echo = new ButtonBuilder()
+          .setCustomId(`echo-${templateId}-${channelId}`)
+          .setLabel("Echo")
+          .setStyle(ButtonStyle.Success);
+        const cancel = new ButtonBuilder()
+          .setCustomId(`cancel-${templateId}-${channelId}`)
+          .setLabel("Cancel")
+          .setStyle(ButtonStyle.Secondary);
+        const button = new ActionRowBuilder<ButtonBuilder>().addComponents(announce, echo, cancel);
         await interaction.reply({
-          content: `Use \`/announce\` or \`/echo\` command and provide with this \`${templateId}\` to use this template directly`,
+          content: "Which action would you like to perform?",
+          components: [button],
+          ephemeral: true,
         });
       }
     }
