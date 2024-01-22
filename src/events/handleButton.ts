@@ -2,6 +2,7 @@ import { Events, Interaction, EmbedBuilder, ColorResolvable, ChannelType } from 
 import db from "../utils/database";
 import { ObjectId } from "mongodb";
 import { COLOR, FOOTER_VALUE } from "../config/constant";
+
 export default {
   name: Events.InteractionCreate,
   once: false,
@@ -32,15 +33,40 @@ export default {
       }
       const title = template.title;
       const description = template.description;
+      const images = template.images;
+
       if (button === "announce") {
+        const embeds: EmbedBuilder[] = [];
         const embed = new EmbedBuilder()
           .setTitle(title)
           .setDescription(description)
           .setColor(COLOR.WHITE as ColorResolvable)
           .setTimestamp()
           .setFooter({ text: FOOTER_VALUE });
-        await channel.send({ content: "📢 Announcement", embeds: [embed] });
-        await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
+        if (images.length === 1 && images[0] === "none") {
+          await channel.send({ content: "📢 Announcement", embeds: [embed] });
+          await interaction.reply({ content: `Embeds sent to <#${channel.id}>` });
+          return;
+        }
+        if (images.length > 0) {
+          const firstImage = images.shift();
+
+          if (firstImage) {
+            embed.setImage(firstImage);
+          }
+
+          embeds.push(embed);
+
+          images.forEach((url: string) => {
+            const newEmbed = new EmbedBuilder().setImage(url).setColor(COLOR.WHITE as ColorResolvable);
+            embeds.push(newEmbed);
+          });
+        } else {
+          await channel.send({ content: "📢 Announcement", embeds: [embed] });
+          await interaction.reply({ content: `Embeds sent to <#${channel.id}>` });
+        }
+        await channel.send({ content: "📢 Announcement", embeds: embeds });
+        await interaction.reply({ content: `Embeds sent to <#${channel.id}>` });
       } else if (button === "echo") {
         await channel.send({ content: `📢 Announcement\n# ${title}\n${description}` });
         await interaction.reply({ content: `Message sent to <#${channel.id}>` });
