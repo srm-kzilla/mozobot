@@ -31,13 +31,13 @@ export default {
     if (!interaction.isModalSubmit()) return;
     const title = interaction.fields.getTextInputValue("Title");
     const description = interaction.fields.getTextInputValue("Description");
-    const image = interaction.fields.getTextInputValue("image") || "none";
-    const images = image.split("\n");
-    const validImages = images.filter(url => isValidImageUrl(url));
-
     const [action, channelId, mention] = interaction.customId.split("-");
 
     if (action === "template") {
+      const image = interaction.fields.getTextInputValue("image") || "none";
+      const images = image.split("\n");
+      const validImages = images.filter(url => isValidImageUrl(url));
+
       const data = await (await db())
         .collection("templates")
         .find({ guildId: interaction.guildId, isDeleted: false })
@@ -79,6 +79,10 @@ export default {
       }
 
       if (action === "announce") {
+        const image = interaction.fields.getTextInputValue("image") || "none";
+        const images = image.split("\n");
+        const validImages = images.filter(url => isValidImageUrl(url));
+
         const embeds: EmbedBuilder[] = [];
         const embed = new EmbedBuilder()
           .setTitle(title)

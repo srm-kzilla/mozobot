@@ -8,9 +8,6 @@ import {
   TextInputStyle,
 } from "discord.js";
 import { Command } from "../interface";
-import db from "../utils/database";
-import { ObjectId } from "mongodb";
-import { TemplateSchemaType } from "../types";
 
 export default {
   data: new SlashCommandBuilder()
@@ -24,7 +21,6 @@ export default {
         .setRequired(true)
         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement);
     })
-    .addStringOption(option => option.setName("id").setDescription("The template you want to use").setRequired(false))
     .addStringOption(option =>
       option.setName("mention").setDescription("Who to mention").setRequired(false),
     ) as SlashCommandBuilder,
@@ -32,39 +28,7 @@ export default {
   async execute(interaction) {
     if (!interaction.guild) return;
     const channelId = (interaction.options.getChannel("channel")?.id || interaction.channelId) as string;
-    const templateId = interaction.options.getString("id");
     const mention = interaction.options.getString("mention") || "none";
-    if (templateId) {
-      const data = await (await db())
-        .collection<TemplateSchemaType>("templates")
-        .findOne({ _id: new ObjectId(templateId), isDeleted: false });
-
-      if (!data) {
-        await interaction.reply({ content: "Did not find a template with that ID", ephemeral: true });
-        return;
-      }
-      const channel = interaction.guild.channels.cache.get(channelId);
-
-      if (!channel) {
-        await interaction.reply({ content: "Target Channel Not Found", ephemeral: true });
-        return;
-      }
-
-      if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement) {
-        await interaction.reply({ content: "Invalid Channel Provided. Please Provide a text channel" });
-        return;
-      }
-
-      if (mention !== "none") {
-        await channel.send({ content: `📢 Announcement ${mention}\n# ${data.title}\n${data.description}` });
-        await interaction.reply({ content: `Message sent to <#${channel.id}>` });
-        return;
-      }
-
-      await channel.send({ content: `# ${data.title}\n${data.description}` });
-      await interaction.reply({ content: `Message sent to <#${channel.id}>` });
-      return;
-    }
     const Title = new TextInputBuilder()
       .setCustomId("Title")
       .setLabel("Provide us with the Title")
