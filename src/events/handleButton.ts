@@ -1,4 +1,4 @@
-import { Events, Interaction, EmbedBuilder, ColorResolvable, ChannelType } from "discord.js";
+import { Events, Interaction, EmbedBuilder, ColorResolvable, ChannelType, MessageEditOptions } from "discord.js";
 import db from "../utils/database";
 import { ObjectId } from "mongodb";
 import { COLOR, FOOTER_VALUE } from "../config/constant";
@@ -70,10 +70,6 @@ export default {
       } else if (button === "echo") {
         await channel.send({ content: `📢 Announcement\n# ${title}\n${description}` });
         await interaction.reply({ content: `Message sent to <#${channel.id}>` });
-      } else {
-        const message = await interaction.channel?.messages.fetch(interaction.message.id);
-        console.log(message);
-        await interaction.reply({ content: "Cancelled Successfully", ephemeral: true });
       }
     }
   },

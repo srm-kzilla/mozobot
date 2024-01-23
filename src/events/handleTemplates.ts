@@ -35,22 +35,11 @@ export default {
           .setCustomId(`echo-${templateId}-${channelId}`)
           .setLabel("Echo")
           .setStyle(ButtonStyle.Success);
-        const cancel = new ButtonBuilder()
-          .setCustomId(`cancel-${templateId}-${channelId}`)
-          .setLabel("Cancel")
-          .setStyle(ButtonStyle.Secondary);
-        const button = new ActionRowBuilder<ButtonBuilder>().addComponents(announce, echo, cancel);
+        const button = new ActionRowBuilder<ButtonBuilder>().addComponents(announce, echo);
         const message = await interaction.reply({
           content: "Which action would you like to perform?",
           components: [button],
           ephemeral: true,
-        });
-        const filter = (interaction: ButtonInteraction) => {
-          return interaction.customId.startsWith("cancel");
-        };
-        const collector = message.createMessageComponentCollector({
-          componentType: ComponentType.Button,
-          filter: filter,
         });
       }
     }
