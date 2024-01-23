@@ -71,6 +71,8 @@ export default {
         await channel.send({ content: `📢 Announcement\n# ${title}\n${description}` });
         await interaction.reply({ content: `Message sent to <#${channel.id}>` });
       } else {
+        const message = await interaction.channel?.messages.fetch(interaction.message.id);
+        console.log(message);
         await interaction.reply({ content: "Cancelled Successfully", ephemeral: true });
       }
     }

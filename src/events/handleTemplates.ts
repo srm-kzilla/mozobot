@@ -1,4 +1,12 @@
-import { Events, Interaction, ButtonBuilder, ButtonStyle, ActionRowBuilder } from "discord.js";
+import {
+  Events,
+  Interaction,
+  ButtonBuilder,
+  ButtonStyle,
+  ActionRowBuilder,
+  ComponentType,
+  ButtonInteraction,
+} from "discord.js";
 import db from "../utils/database";
 import { ObjectId } from "mongodb";
 
@@ -32,10 +40,17 @@ export default {
           .setLabel("Cancel")
           .setStyle(ButtonStyle.Secondary);
         const button = new ActionRowBuilder<ButtonBuilder>().addComponents(announce, echo, cancel);
-        await interaction.reply({
+        const message = await interaction.reply({
           content: "Which action would you like to perform?",
           components: [button],
           ephemeral: true,
+        });
+        const filter = (interaction: ButtonInteraction) => {
+          return interaction.customId.startsWith("cancel");
+        };
+        const collector = message.createMessageComponentCollector({
+          componentType: ComponentType.Button,
+          filter: filter,
         });
       }
     }
