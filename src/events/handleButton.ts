@@ -1,4 +1,4 @@
-import { Events, Interaction, EmbedBuilder, ColorResolvable, ChannelType, MessageEditOptions } from "discord.js";
+import { Events, Interaction, EmbedBuilder, ColorResolvable, ChannelType } from "discord.js";
 import db from "../utils/database";
 import { ObjectId } from "mongodb";
 import { COLOR, FOOTER_VALUE } from "../config/constant";

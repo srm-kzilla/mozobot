@@ -1,12 +1,4 @@
-import {
-  Events,
-  Interaction,
-  ButtonBuilder,
-  ButtonStyle,
-  ActionRowBuilder,
-  ComponentType,
-  ButtonInteraction,
-} from "discord.js";
+import { Events, Interaction, ButtonBuilder, ButtonStyle, ActionRowBuilder } from "discord.js";
 import db from "../utils/database";
 import { ObjectId } from "mongodb";
 
@@ -36,7 +28,7 @@ export default {
           .setLabel("Echo")
           .setStyle(ButtonStyle.Success);
         const button = new ActionRowBuilder<ButtonBuilder>().addComponents(announce, echo);
-        const message = await interaction.reply({
+        await interaction.reply({
           content: "Which action would you like to perform?",
           components: [button],
           ephemeral: true,
