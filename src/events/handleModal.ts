@@ -34,7 +34,7 @@ export default {
     const [action, channelId, mention] = interaction.customId.split("-");
 
     if (action === "template") {
-      const image = interaction.fields.getTextInputValue("image") || "none";
+      const image = interaction.fields.getTextInputValue("image") || "null";
       const images = image.split("\n");
       const validImages = images.filter(url => isValidImageUrl(url));
 
