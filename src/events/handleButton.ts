@@ -43,7 +43,7 @@ export default {
           .setColor(COLOR.WHITE as ColorResolvable)
           .setTimestamp()
           .setFooter({ text: FOOTER_VALUE });
-        if (images.length === 1 && images[0] === "null") {
+        if (images) {
           await channel.send({ content: "📢 Announcement", embeds: [embed] });
           await interaction.reply({ content: `Embeds sent to <#${channel.id}>` });
           return;
