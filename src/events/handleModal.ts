@@ -31,10 +31,13 @@ export default {
     if (!interaction.isModalSubmit()) return;
     const title = interaction.fields.getTextInputValue("Title");
     const description = interaction.fields.getTextInputValue("Description");
-
     const [action, channelId, mention] = interaction.customId.split("-");
 
     if (action === "template") {
+      const image = interaction.fields.getTextInputValue("image") || "";
+      const images = image.split("\n");
+      const validImages = images.filter(url => isValidImageUrl(url));
+
       const data = await (await db())
         .collection("templates")
         .find({ guildId: interaction.guildId, isDeleted: false })
@@ -56,6 +59,7 @@ export default {
         title,
         description,
         guildId: interaction.guild.id,
+        images: validImages,
         isDeleted: false,
       });
       await interaction.reply({ content: "Template added to database!" });
@@ -75,6 +79,10 @@ export default {
       }
 
       if (action === "announce") {
+        const image = interaction.fields.getTextInputValue("image") || "none";
+        const images = image.split("\n");
+        const validImages = images.filter(url => isValidImageUrl(url));
+
         const embeds: EmbedBuilder[] = [];
         const embed = new EmbedBuilder()
           .setTitle(title)
@@ -83,7 +91,6 @@ export default {
           .setTimestamp()
           .setFooter({ text: FOOTER_VALUE });
 
-        const image = interaction.fields.getTextInputValue("image") || "none";
         if (image === "none") {
           if (mention === "none") {
             await channel.send({ embeds: [embed] });
@@ -93,8 +100,6 @@ export default {
           await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
           return;
         }
-        const images = image.split("\n");
-        const validImages = images.filter(url => isValidImageUrl(url));
 
         if (validImages.length > 0) {
           const firstImage = validImages.shift();

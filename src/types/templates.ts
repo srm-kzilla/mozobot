@@ -6,6 +6,7 @@ export const templateSchema = z.object({
   title: z.string(),
   description: z.string(),
   guildId: z.string(),
+  images: z.array(z.string()),
   isDeleted: z.boolean(),
 });
 
