@@ -68,15 +68,15 @@ export default {
       modal.addComponents(firstActionRow, secondActionRow, thirdActionRow);
       await interaction.showModal(modal);
     } else if (subcommand === "delete") {
+      await interaction.deferReply({ ephemeral: true });
       const data = await (await db())
         .collection("templates")
         .find({ guildId: interaction.guildId, isDeleted: false })
         .toArray();
 
       if (data.length === 0) {
-        await interaction.reply({
+        await interaction.editReply({
           content: "No Templates found! use `/template create` to create one!",
-          ephemeral: true,
         });
         return;
       }
@@ -93,8 +93,9 @@ export default {
         .addOptions(templatesData);
 
       const actionRow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu);
-      await interaction.reply({ content: "Select a template to delete:", components: [actionRow], ephemeral: true });
+      await interaction.editReply({ content: "Select a template to delete:", components: [actionRow] });
     } else if (subcommand === "list") {
+      await interaction.deferReply({ ephemeral: true });
       const data = await (
         await db()
       )
@@ -124,7 +125,7 @@ export default {
         .setPlaceholder("Select a template")
         .addOptions(templatesData);
       const actionRow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu);
-      await interaction.reply({ content: "Select a template", components: [actionRow], ephemeral: true });
+      await interaction.editReply({ content: "Select a template", components: [actionRow] });
     }
   },
 } as Command;
