@@ -175,7 +175,7 @@ export default {
         }
         const channel = await interaction.client.channels.fetch(channelId);
         if (!channel) return;
-        // @ts-ignore
+        // @ts-expect-error
         message = await channel.messages.fetch(messageId);
         if (type === "announce") {
           const images = (interaction.fields.getTextInputValue("image") || "")
