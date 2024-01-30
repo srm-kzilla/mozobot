@@ -111,6 +111,17 @@ export default {
         ];
         modal.addComponents(...actionRows.slice(0, action === "announce" ? 3 : 2));
         await interaction.showModal(modal);
+      } else if (button === "delete") {
+        if (!messageId || !channelId) {
+          await interaction.reply({ content: "Invalid data received", ephemeral: true });
+          return;
+        }
+        const channel = await interaction.client.channels.fetch(channelId);
+        if (!channel) return;
+        // @ts-ignore
+        const message = await channel.messages.fetch(messageId);
+        await message.delete();
+        await interaction.reply({ content: "Deleted Successfully", ephemeral: true });
       }
     }
   },

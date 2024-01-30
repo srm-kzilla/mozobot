@@ -12,7 +12,6 @@ import {
 import { COLOR, FOOTER_VALUE } from "../config/constant";
 import db from "../utils/database";
 import { TemplateSchemaType } from "../types";
-import test from "node:test";
 
 async function isValidImageUrl(url: string): Promise<boolean> {
   try {
@@ -97,7 +96,7 @@ export default {
         const delete_message = new ButtonBuilder()
           .setCustomId(`delete--${channelId}-${messageId}`)
           .setLabel("Delete")
-          .setStyle(ButtonStyle.Success);
+          .setStyle(ButtonStyle.Danger);
         return new ActionRowBuilder<ButtonBuilder>().addComponents(edit_message, delete_message);
       };
 
@@ -121,7 +120,7 @@ export default {
             message = await channel.send({ content: `📢 Announcement ${mention}`, embeds: [embed] });
           }
           const button = createComponent(message.id);
-          await interaction.reply({ content: `Embed sent to <#${channel.id}>`, components: [button] });
+          await interaction.reply({ content: `Embed sent to <#${channel.id}>`, components: [button], ephemeral: true });
           return;
         }
 
@@ -142,6 +141,7 @@ export default {
           await interaction.reply({
             content: `Embed sent to <#${channel.id}>`,
             components: [createComponent(message.id)],
+            ephemeral: true,
           });
           return;
         }
@@ -149,6 +149,7 @@ export default {
         await interaction.reply({
           content: `Embed sent to <#${channel.id}>`,
           components: [createComponent(message.id)],
+          ephemeral: true,
         });
       } else if (action === "echo") {
         if (mention !== "none") {
@@ -156,6 +157,7 @@ export default {
           await interaction.reply({
             content: `Message sent to <#${channel.id}>`,
             components: [createComponent(message.id)],
+            ephemeral: true,
           });
           return;
         }
@@ -164,6 +166,7 @@ export default {
         await interaction.reply({
           content: `Message sent to <#${channel.id}>`,
           components: [createComponent(message.id)],
+          ephemeral: true,
         });
       } else if (action === "edit") {
         if (!messageId || !channelId || !type) {
@@ -173,7 +176,7 @@ export default {
         const channel = await interaction.client.channels.fetch(channelId);
         if (!channel) return;
         // @ts-ignore
-        const message = await channel.messages.fetch(messageId);
+        message = await channel.messages.fetch(messageId);
         if (type === "announce") {
           const images = (interaction.fields.getTextInputValue("image") || "")
             .split("\n")
@@ -194,15 +197,9 @@ export default {
             ],
           });
         } else {
-          const embed = new EmbedBuilder()
-            .setTitle(title)
-            .setDescription(description)
-            .setColor(COLOR.WHITE as ColorResolvable)
-            .setTimestamp()
-            .setFooter({ text: FOOTER_VALUE });
-          await message.edit({ embeds: embed });
+          await message.edit({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
         }
-        await interaction.reply({ content: "Edited message" });
+        await interaction.reply({ content: "Edited message", ephemeral: true });
       }
     }
   },
