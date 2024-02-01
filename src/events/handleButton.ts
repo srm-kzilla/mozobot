@@ -118,7 +118,7 @@ export default {
         }
         const channel = await interaction.client.channels.fetch(channelId);
         if (!channel) return;
-        // @ts-expect-error
+        // @ts-expect-error: type issue with discord.js
         const message = await channel.messages.fetch(messageId);
         await message.delete();
         await interaction.reply({ content: "Deleted Successfully", ephemeral: true });
