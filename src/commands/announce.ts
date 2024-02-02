@@ -21,7 +21,7 @@ export default {
         .setRequired(true)
         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement);
     })
-    .addStringOption(option =>
+    .addRoleOption(option =>
       option.setName("mention").setDescription("Who to mention").setRequired(false),
     ) as SlashCommandBuilder,
 
@@ -29,7 +29,7 @@ export default {
     if (!interaction.guild) return;
 
     const channelId = (interaction.options.getChannel("channel")?.id || interaction.channelId) as string;
-    const mention = interaction.options.getString("mention") || "none";
+    const mention = interaction.options.getRole("mention") || "none";
 
     const modal = new ModalBuilder().setCustomId(`announce-${channelId}-${mention}`).setTitle("Announcements");
     const Title = new TextInputBuilder()

@@ -1,4 +1,14 @@
-import { ChannelType, ColorResolvable, EmbedBuilder, Events, Interaction } from "discord.js";
+import {
+  ChannelType,
+  ColorResolvable,
+  EmbedBuilder,
+  Events,
+  Interaction,
+  ButtonBuilder,
+  ButtonStyle,
+  ActionRowBuilder,
+  Message,
+} from "discord.js";
 import { COLOR, FOOTER_VALUE } from "../config/constant";
 import db from "../utils/database";
 import { TemplateSchemaType } from "../types";
@@ -31,7 +41,8 @@ export default {
     if (!interaction.isModalSubmit()) return;
     const title = interaction.fields.getTextInputValue("Title");
     const description = interaction.fields.getTextInputValue("Description");
-    const [action, channelId, mention] = interaction.customId.split("-");
+    const [action, channelId, mention, messageId, type] = interaction.customId.split("-");
+    let message: Message;
 
     if (action === "template") {
       const image = interaction.fields.getTextInputValue("image") || "";
@@ -77,6 +88,17 @@ export default {
         await interaction.reply({ content: "Invalid Channel Provided. Please Provide a text channel" });
         return;
       }
+      const createComponent = (messageId: string): ActionRowBuilder<ButtonBuilder> => {
+        const edit_message = new ButtonBuilder()
+          .setCustomId(`edit--${channelId}-${messageId}-${action}`)
+          .setLabel("Edit")
+          .setStyle(ButtonStyle.Primary);
+        const delete_message = new ButtonBuilder()
+          .setCustomId(`delete--${channelId}-${messageId}`)
+          .setLabel("Delete")
+          .setStyle(ButtonStyle.Danger);
+        return new ActionRowBuilder<ButtonBuilder>().addComponents(edit_message, delete_message);
+      };
 
       if (action === "announce") {
         const image = interaction.fields.getTextInputValue("image") || "none";
@@ -93,11 +115,12 @@ export default {
 
         if (image === "none") {
           if (mention === "none") {
-            await channel.send({ embeds: [embed] });
+            message = await channel.send({ embeds: [embed] });
           } else {
-            await channel.send({ content: `📢 Announcement ${mention}`, embeds: [embed] });
+            message = await channel.send({ content: `📢 Announcement ${mention}`, embeds: [embed] });
           }
-          await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
+          const button = createComponent(message.id);
+          await interaction.reply({ content: `Embed sent to <#${channel.id}>`, components: [button], ephemeral: true });
           return;
         }
 
@@ -114,21 +137,69 @@ export default {
           embeds.push(newEmbed);
         });
         if (mention !== "none") {
-          await channel.send({ content: `📢 Announcement ${mention}`, embeds: embeds });
-          await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
+          message = await channel.send({ content: `📢 Announcement ${mention}`, embeds: embeds });
+          await interaction.reply({
+            content: `Embed sent to <#${channel.id}>`,
+            components: [createComponent(message.id)],
+            ephemeral: true,
+          });
           return;
         }
-        await channel.send({ embeds: embeds });
-        await interaction.reply({ content: `Embed sent to <#${channel.id}>` });
+        message = await channel.send({ embeds: embeds });
+        await interaction.reply({
+          content: `Embed sent to <#${channel.id}>`,
+          components: [createComponent(message.id)],
+          ephemeral: true,
+        });
       } else if (action === "echo") {
         if (mention !== "none") {
-          await channel.send({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
-          await interaction.reply({ content: `Message sent to <#${channel.id}>` });
+          message = await channel.send({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
+          await interaction.reply({
+            content: `Message sent to <#${channel.id}>`,
+            components: [createComponent(message.id)],
+            ephemeral: true,
+          });
           return;
         }
 
-        await channel.send({ content: `# ${title}\n${description}` });
-        await interaction.reply({ content: `Message sent to <#${channel.id}>` });
+        message = await channel.send({ content: `# ${title}\n${description}` });
+        await interaction.reply({
+          content: `Message sent to <#${channel.id}>`,
+          components: [createComponent(message.id)],
+          ephemeral: true,
+        });
+      } else if (action === "edit") {
+        if (!messageId || !channelId || !type) {
+          await interaction.reply({ content: "Invalid data received", ephemeral: true });
+          return;
+        }
+        const channel = await interaction.client.channels.fetch(channelId);
+        if (!channel) return;
+        // @ts-expect-error: type issue with discord.js
+        message = await channel.messages.fetch(messageId);
+        if (type === "announce") {
+          const images = (interaction.fields.getTextInputValue("image") || "")
+            .split("\n")
+            .filter(url => isValidImageUrl(url));
+          const embed = new EmbedBuilder()
+            .setTitle(title)
+            .setDescription(description)
+            .setColor(COLOR.WHITE as ColorResolvable)
+            .setTimestamp()
+            .setFooter({ text: FOOTER_VALUE })
+            .setImage(images.shift() || null);
+          await message.edit({
+            embeds: [
+              embed,
+              ...images.map(image => {
+                return new EmbedBuilder().setImage(image).setColor(COLOR.WHITE as ColorResolvable);
+              }),
+            ],
+          });
+        } else {
+          await message.edit({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
+        }
+        await interaction.reply({ content: "Edited message", ephemeral: true });
       }
     }
   },

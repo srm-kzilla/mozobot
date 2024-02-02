@@ -21,14 +21,14 @@ export default {
         .setRequired(true)
         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement);
     })
-    .addStringOption(option =>
+    .addRoleOption(option =>
       option.setName("mention").setDescription("Who to mention").setRequired(false),
     ) as SlashCommandBuilder,
 
   async execute(interaction) {
     if (!interaction.guild) return;
     const channelId = (interaction.options.getChannel("channel")?.id || interaction.channelId) as string;
-    const mention = interaction.options.getString("mention") || "none";
+    const mention = interaction.options.getRole("mention") || "none";
     const Title = new TextInputBuilder()
       .setCustomId("Title")
       .setLabel("Provide us with the Title")
