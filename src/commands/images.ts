@@ -21,6 +21,7 @@ export default {
         .setRequired(true)
         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement);
     }) as SlashCommandBuilder,
+
   async execute(interaction) {
     if (!interaction.guild) return;
     const channelId = (interaction.options.getChannel("channel")?.id || interaction.channelId) as string;
@@ -31,6 +32,7 @@ export default {
       .setStyle(TextInputStyle.Paragraph)
       .setMinLength(10)
       .setMaxLength(4000);
+
     const thirdActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Image);
     modal.addComponents(thirdActionRow);
     await interaction.showModal(modal);
