@@ -39,12 +39,12 @@ export default {
   async execute(interaction: Interaction) {
     if (!interaction.guild) return;
     if (!interaction.isModalSubmit()) return;
-    const title = interaction.fields.getTextInputValue("Title");
-    const description = interaction.fields.getTextInputValue("Description");
     const [action, channelId, mention, messageId, type] = interaction.customId.split("-");
     let message: Message;
 
     if (action === "template") {
+      const title = interaction.fields.getTextInputValue("Title");
+      const description = interaction.fields.getTextInputValue("Description");
       const image = interaction.fields.getTextInputValue("image") || "";
       const images = image.split("\n");
       const validImages = images.filter(url => isValidImageUrl(url));
@@ -101,6 +101,8 @@ export default {
       };
 
       if (action === "announce") {
+        const title = interaction.fields.getTextInputValue("Title");
+        const description = interaction.fields.getTextInputValue("Description");
         const image = interaction.fields.getTextInputValue("image") || "none";
         const images = image.split("\n");
         const validImages = images.filter(url => isValidImageUrl(url));
@@ -152,6 +154,8 @@ export default {
           ephemeral: true,
         });
       } else if (action === "echo") {
+        const title = interaction.fields.getTextInputValue("Title");
+        const description = interaction.fields.getTextInputValue("Description");
         if (mention !== "none") {
           message = await channel.send({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
           await interaction.reply({
@@ -168,7 +172,19 @@ export default {
           components: [createComponent(message.id)],
           ephemeral: true,
         });
+      } else if (action === "images") {
+        const image = interaction.fields.getTextInputValue("image") || "none";
+        const images = image.split("\n");
+        const imageUrls = images.filter(url => isValidImageUrl(url));
+        if (imageUrls) {
+          for (const imageUrl of imageUrls) {
+            await channel.send({ content: imageUrl });
+          }
+          await interaction.reply({ content: "Image sent successfully", ephemeral: true });
+        }
       } else if (action === "edit") {
+        const title = interaction.fields.getTextInputValue("Title");
+        const description = interaction.fields.getTextInputValue("Description");
         if (!messageId || !channelId || !type) {
           await interaction.reply({ content: "Invalid data received", ephemeral: true });
           return;
