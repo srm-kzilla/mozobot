@@ -30,12 +30,12 @@ export default {
     const channelId = (interaction.options.getChannel("channel")?.id || interaction.channelId) as string;
     const mention = interaction.options.getRole("mention") || "none";
     const Title = new TextInputBuilder()
-      .setCustomId("Title")
+      .setCustomId("title")
       .setLabel("Provide us with the Title")
       .setStyle(TextInputStyle.Short)
       .setMaxLength(50);
     const Description = new TextInputBuilder()
-      .setCustomId("Description")
+      .setCustomId("description")
       .setLabel("Provide us with some Description")
       .setStyle(TextInputStyle.Paragraph)
       .setMaxLength(1900);

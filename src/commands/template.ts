@@ -42,13 +42,13 @@ export default {
     if (subcommand === "create") {
       const modal = new ModalBuilder().setCustomId(`template`).setTitle("Add Template");
       const Title = new TextInputBuilder()
-        .setCustomId("Title")
+        .setCustomId("title")
         .setLabel("Provide us with the Title")
         .setStyle(TextInputStyle.Short)
         .setMaxLength(50);
 
       const Description = new TextInputBuilder()
-        .setCustomId("Description")
+        .setCustomId("description")
         .setLabel("Provide us with some Description")
         .setStyle(TextInputStyle.Paragraph)
         .setMaxLength(1900);
