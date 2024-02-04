@@ -43,8 +43,8 @@ export default {
     let message: Message;
 
     if (action === "template") {
-      const title = interaction.fields.getTextInputValue("Title");
-      const description = interaction.fields.getTextInputValue("Description");
+      const title = interaction.fields.getTextInputValue("title");
+      const description = interaction.fields.getTextInputValue("description");
       const image = interaction.fields.getTextInputValue("image") || "";
       const images = image.split("\n");
       const validImages = images.filter(url => isValidImageUrl(url));
@@ -101,8 +101,8 @@ export default {
       };
 
       if (action === "announce") {
-        const title = interaction.fields.getTextInputValue("Title");
-        const description = interaction.fields.getTextInputValue("Description");
+        const title = interaction.fields.getTextInputValue("title");
+        const description = interaction.fields.getTextInputValue("description");
         const image = interaction.fields.getTextInputValue("image") || "none";
         const images = image.split("\n");
         const validImages = images.filter(url => isValidImageUrl(url));
@@ -154,8 +154,8 @@ export default {
           ephemeral: true,
         });
       } else if (action === "echo") {
-        const title = interaction.fields.getTextInputValue("Title");
-        const description = interaction.fields.getTextInputValue("Description");
+        const title = interaction.fields.getTextInputValue("title");
+        const description = interaction.fields.getTextInputValue("description");
         if (mention !== "none") {
           message = await channel.send({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
           await interaction.reply({
@@ -183,8 +183,8 @@ export default {
           await interaction.reply({ content: "Image sent successfully", ephemeral: true });
         }
       } else if (action === "edit") {
-        const title = interaction.fields.getTextInputValue("Title");
-        const description = interaction.fields.getTextInputValue("Description");
+        const title = interaction.fields.getTextInputValue("title");
+        const description = interaction.fields.getTextInputValue("description");
         if (!messageId || !channelId || !type) {
           await interaction.reply({ content: "Invalid data received", ephemeral: true });
           return;
