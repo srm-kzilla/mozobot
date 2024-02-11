@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "start": "NODE_ENV=production node build/index.js",
-    "build": "tsc",
+    "build": "esbuild src/**/*.ts src/*.ts --outdir=build --platform=node --format=cjs",
     "dev": "tsc-watch --onSuccess \"node build/index.js\"",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write src/*.ts src/**/*.ts",
