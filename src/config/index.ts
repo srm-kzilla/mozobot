@@ -15,9 +15,9 @@ export const env = envSchema.parse(process.env);
 export type EnvSchemaType = z.infer<typeof envSchema>;
 
 export default {
-  botToken: env.DISCORD_TOKEN,
-  clientID: env.DISCORD_CLIENT_ID,
-  guildID: env.GUILD_ID,
-  nodeEnv: env.NODE_ENV,
-  dbUri: env.DATABASE_URI,
+  BOT_TOKEN: env.DISCORD_TOKEN,
+  CLIENT_ID: env.DISCORD_CLIENT_ID,
+  GUILD_ID: env.GUILD_ID,
+  NODE_ENV: env.NODE_ENV,
+  DB_URI: env.DATABASE_URI,
 };

@@ -7,7 +7,7 @@ export const templateSchema = z.object({
   description: z.string(),
   guildId: z.string(),
   images: z.array(z.string()),
-  isDeleted: z.boolean(),
+  isDeleted: z.boolean().default(false),
 });
 
 export type TemplateSchemaType = z.infer<typeof templateSchema>;
