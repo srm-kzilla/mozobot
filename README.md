@@ -1,5 +1,5 @@
 <div align="center">
-  <img alt="SRMKZILLA Logo" src="" height="56" />
+  <img alt="SRMKZILLA Logo" src="./docs/SRMKZILLALogo.svg" height="56" />
 </div>
 <div align="center">
   <img alt="MOZOBOT Logo" src="" height="56" />
