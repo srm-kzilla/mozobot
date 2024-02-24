@@ -10,19 +10,15 @@ jobs:
   lint-build-and-test:
     name: Lint, Build, and Test
     runs-on: ubuntu-latest
-    timeout-minutes: 10
 
     steps:
-      - name: Checkout code
+      - name: Checkout 
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
 
-      - uses: actions/setup-node@v3
-        name: Install Node.js
+      - name: Install Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 20.10
-          cache: "npm"
 
       - uses: pnpm/action-setup@v2
         name: Install pnpm
