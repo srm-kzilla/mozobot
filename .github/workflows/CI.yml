@@ -1,16 +1,18 @@
-name: build
+name: CI
 
 on:
   push:
-    branches: ['main']
+    branches: '*'
   pull_request:
     branches: ['main']
 
 jobs:
-  build:
+  lint-build-and-test:
+    name: Lint, Build, and Test
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout 
         uses: actions/checkout@v3
 
       - name: Install Node.js
@@ -39,6 +41,12 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: Prettier Check
+        run: pnpm run format:check
+
+      - name: ESLint
+        run: pnpm lint
 
       - name: Build
         run: pnpm run build
