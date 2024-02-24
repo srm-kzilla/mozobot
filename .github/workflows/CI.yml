@@ -1,22 +1,28 @@
-name: build
+name: CI
 
 on:
   push:
-    branches: ['main']
+    branches: '*'
   pull_request:
     branches: ['main']
 
 jobs:
-  build:
+  lint-build-and-test:
+    name: Lint, Build, and Test
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+    timeout-minutes: 10
 
-      - name: Install Node.js
-        uses: actions/setup-node@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - uses: actions/setup-node@v3
+        name: Install Node.js
         with:
           node-version: 20.10
+          cache: "npm"
 
       - uses: pnpm/action-setup@v2
         name: Install pnpm
@@ -39,6 +45,12 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: Prettier Check
+        run: pnpm run format:check
+
+      - name: ESLint
+        run: pnpm lint
 
       - name: Build
         run: pnpm run build
