@@ -39,3 +39,7 @@ export async function registerSlashCommands() {
 export function getCommands() {
   return commands;
 }
+
+export function getCommandData() {
+  return commandsData;
+}
