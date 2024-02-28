@@ -51,8 +51,8 @@ export default {
         .setCustomId("description")
         .setLabel("Provide us with some Description")
         .setStyle(TextInputStyle.Paragraph)
-        .setMaxLength(1900);
-
+        .setMaxLength(1900)
+        .setRequired(false);
       const Image = new TextInputBuilder()
         .setCustomId("image")
         .setLabel("Provide us with the Image")
