@@ -53,7 +53,7 @@ export default {
             .setDescription(description)
             .setColor(COLOR.WHITE as ColorResolvable)
             .setTimestamp()
-            .setFooter({ text: FOOTER_VALUE });
+            .setFooter({ text: FOOTER_VALUE })
           if (!images) {
             await channel.send({ content: "📢 Announcement", embeds: [embed] });
             await interaction.reply({ content: `Embeds sent to <#${channel.id}>` });
@@ -87,14 +87,12 @@ export default {
           .setCustomId("title")
           .setLabel("Provide us with the Title")
           .setStyle(TextInputStyle.Short)
-          .setMaxLength(50)
-          .setRequired(false)
+          .setMaxLength(50);
         const Description = new TextInputBuilder()
           .setCustomId("description")
           .setLabel("Provide us with some Description")
           .setStyle(TextInputStyle.Paragraph)
-          .setMaxLength(1900)
-          .setRequired(false);
+          .setMaxLength(1900);
         const Image = new TextInputBuilder()
           .setCustomId("image")
           .setLabel("Provide us with the Image")
