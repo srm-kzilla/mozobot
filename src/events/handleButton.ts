@@ -53,7 +53,7 @@ export default {
             .setDescription(description)
             .setColor(COLOR.WHITE as ColorResolvable)
             .setTimestamp()
-            .setFooter({ text: FOOTER_VALUE })
+            .setFooter({ text: FOOTER_VALUE });
           if (!images) {
             await channel.send({ content: "📢 Announcement", embeds: [embed] });
             await interaction.reply({ content: `Embeds sent to <#${channel.id}>` });
