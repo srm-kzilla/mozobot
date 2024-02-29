@@ -87,12 +87,16 @@ export default {
           .setCustomId("title")
           .setLabel("Provide us with the Title")
           .setStyle(TextInputStyle.Short)
-          .setMaxLength(50);
+          .setMaxLength(50)
+          .setRequired(false); 
+        
         const Description = new TextInputBuilder()
           .setCustomId("description")
           .setLabel("Provide us with some Description")
           .setStyle(TextInputStyle.Paragraph)
-          .setMaxLength(1900);
+          .setMaxLength(1900)
+          .setRequired(false);
+
         const Image = new TextInputBuilder()
           .setCustomId("image")
           .setLabel("Provide us with the Image")
