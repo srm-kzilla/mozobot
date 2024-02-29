@@ -37,7 +37,7 @@ export default {
       .setLabel("Provide us with the Title")
       .setStyle(TextInputStyle.Short)
       .setMaxLength(50);
-      const Description = new TextInputBuilder()
+    const Description = new TextInputBuilder()
       .setCustomId("description")
       .setLabel("Provide us with some Description")
       .setStyle(TextInputStyle.Paragraph)

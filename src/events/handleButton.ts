@@ -88,8 +88,8 @@ export default {
           .setLabel("Provide us with the Title")
           .setStyle(TextInputStyle.Short)
           .setMaxLength(50)
-          .setRequired(false); 
-        
+          .setRequired(false);
+
         const Description = new TextInputBuilder()
           .setCustomId("description")
           .setLabel("Provide us with some Description")
