@@ -111,6 +111,7 @@ export default {
         ];
         modal.addComponents(...actionRows.slice(0, action === "announce" ? 3 : 2));
         await interaction.showModal(modal);
+        await interaction.reply({ content: "Editing Announcement", ephemeral: false });
       } else if (button === "delete") {
         if (!messageId || !channelId) {
           await interaction.reply({ content: "Invalid data received", ephemeral: true });
