@@ -38,8 +38,8 @@ export default {
       .setCustomId("description")
       .setLabel("Provide us with some Description")
       .setStyle(TextInputStyle.Paragraph)
-      .setMaxLength(1900);
-
+      .setMaxLength(1900)
+      .setRequired(false);
     const firstActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Title);
     const secondActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(Description);
     const modal = new ModalBuilder().setCustomId(`echo-${channelId}-${mention}`).setTitle("Echo Modal");
