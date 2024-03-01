@@ -15,7 +15,7 @@ export default {
     .setName("announce")
     .setDescription("announcement the world something")
     .setDMPermission(false)
-    .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addChannelOption((option: SlashCommandChannelOption) => {
       return option
         .setName("channel")
