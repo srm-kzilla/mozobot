@@ -6,6 +6,7 @@ import {
   SlashCommandChannelOption,
   TextInputBuilder,
   TextInputStyle,
+  PermissionFlagsBits,
 } from "discord.js";
 import { Command } from "../interface";
 
@@ -14,6 +15,7 @@ export default {
     .setName("announce")
     .setDescription("announcement the world something")
     .setDMPermission(false)
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
     .addChannelOption((option: SlashCommandChannelOption) => {
       return option
         .setName("channel")
@@ -25,6 +27,7 @@ export default {
       option.setName("mention").setDescription("Who to mention").setRequired(false),
     ) as SlashCommandBuilder,
 
+  isMod: true,
   async execute(interaction) {
     if (!interaction.guild) return;
 
