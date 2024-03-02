@@ -6,6 +6,7 @@ import {
   SlashCommandChannelOption,
   TextInputBuilder,
   TextInputStyle,
+  PermissionFlagsBits,
 } from "discord.js";
 import { Command } from "../interface";
 
@@ -14,6 +15,7 @@ export default {
     .setName("images")
     .setDescription("send images")
     .setDMPermission(false)
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addChannelOption((option: SlashCommandChannelOption) => {
       return option
         .setName("channel")
@@ -21,6 +23,8 @@ export default {
         .setRequired(true)
         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement);
     }) as SlashCommandBuilder,
+
+  isMod: true,
 
   async execute(interaction) {
     if (!interaction.guild) return;

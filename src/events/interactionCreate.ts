@@ -14,15 +14,27 @@ export default {
       await interaction.reply({ content: "Command not found", ephemeral: true });
       return;
     }
+    if (command.isMod) {
+      const interactionChannelId = interaction.channelId;
+      const envChannelId = process.env.CHANNEL_ID;
 
-    try {
-      command.execute(interaction);
-    } catch (err) {
-      console.error(err);
-      await interaction.reply({
-        content: "There was an error while executing this command!",
-        ephemeral: true,
-      });
+      if (interactionChannelId !== envChannelId) {
+        await interaction.reply({
+          content: "This command can only be executed in a specific channel.",
+          ephemeral: true,
+        });
+        return;
+      }
+
+      try {
+        command.execute(interaction);
+      } catch (err) {
+        console.error(err);
+        await interaction.reply({
+          content: "There was an error while executing this command!",
+          ephemeral: true,
+        });
+      }
     }
   },
 };

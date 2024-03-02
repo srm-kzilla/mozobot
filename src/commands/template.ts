@@ -7,6 +7,7 @@ import {
   StringSelectMenuBuilder,
   SlashCommandSubcommandBuilder,
   ChannelType,
+  PermissionFlagsBits,
 } from "discord.js";
 import { Command } from "../interface";
 import db from "../utils/database";
@@ -16,6 +17,7 @@ export default {
     .setName("template")
     .setDescription("provides us with the templates")
     .setDMPermission(false)
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addSubcommand((subcommand: SlashCommandSubcommandBuilder) =>
       subcommand.setName("create").setDescription("Creates Templates"),
     )
@@ -34,6 +36,8 @@ export default {
     .addSubcommand((subcommand: SlashCommandSubcommandBuilder) =>
       subcommand.setName("delete").setDescription("Deletes the Templates"),
     ) as SlashCommandBuilder,
+
+  isMod: true,
 
   async execute(interaction) {
     if (!interaction.guild) return;
