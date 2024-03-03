@@ -9,6 +9,7 @@ const envSchema = z.object({
   GUILD_ID: z.string(),
   NODE_ENV: z.string().optional().default("development"),
   DATABASE_URI: z.string(),
+  MOD_CHANNEL_ID: z.string(),
 });
 
 export const env = envSchema.parse(process.env);
@@ -20,4 +21,5 @@ export default {
   GUILD_ID: env.GUILD_ID,
   NODE_ENV: env.NODE_ENV,
   DB_URI: env.DATABASE_URI,
+  MOD_CHANNEL_ID: env.MOD_CHANNEL_ID,
 };
