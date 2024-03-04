@@ -12,7 +12,7 @@ const envSchema = z.object({
   MOD_CHANNEL_ID: z.string(),
 });
 
-export const env = envSchema.parse(process.env);
+const env = envSchema.parse(process.env);
 export type EnvSchemaType = z.infer<typeof envSchema>;
 
 export default {

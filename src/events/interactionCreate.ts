@@ -1,6 +1,6 @@
 import { Collection, Events, Interaction } from "discord.js";
 import { Command } from "../interface";
-import { env } from "../config/index";
+import env from "../config/index";
 
 export default {
   name: Events.InteractionCreate,
