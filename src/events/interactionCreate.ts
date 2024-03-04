@@ -16,7 +16,6 @@ export default {
       return;
     }
     if (command.isMod) {
-      const interactionChannelId = interaction.channelId;
       const envChannelId = env.MOD_CHANNEL_ID;
 
       if (interactionChannelId !== envChannelId) {
