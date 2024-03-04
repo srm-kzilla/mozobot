@@ -15,21 +15,19 @@ export default {
       return;
     }
 
-    try {
-      if (command.isMod) {
-        const interactionChannelId = interaction.channelId;
-        const envChannelId = process.env.CHANNEL_ID;
+    const interactionChannelId = interaction.channelId;
+    const envChannelId = process.env.CHANNEL_ID;
 
-        if (interactionChannelId !== envChannelId) {
-          await interaction.reply({
-            content: "This command can only be executed in a specific channel.",
-            ephemeral: true,
-          });
-          return;
-        }
-      } else {
-        command.execute(interaction);
-      }
+    if (command.isMod && interactionChannelId !== envChannelId) {
+      await interaction.reply({
+        content: "Permission denied. This command can only be executed in a specific channel.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    try {
+      command.execute(interaction);
     } catch (err) {
       console.error(err);
       await interaction.reply({
