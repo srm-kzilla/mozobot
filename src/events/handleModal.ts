@@ -200,6 +200,12 @@ export default {
           await interaction.reply({ content: "Invalid data received", ephemeral: true });
           return;
         }
+
+        if (!title && !description) {
+          await interaction.reply({ content: "Both Title and Description can't be empty", ephemeral: true });
+          return;
+        }
+
         const channel = await interaction.client.channels.fetch(channelId);
         if (!channel) return;
         // @ts-expect-error: type issue with discord.js
@@ -216,10 +222,6 @@ export default {
             .setTimestamp()
             .setFooter({ text: FOOTER_VALUE })
             .setImage(imageUrl.shift() || null);
-          if (!title && !description) {
-            await interaction.reply({ content: "Both Title and Description can't be empty", ephemeral: true });
-            return;
-          }
           await message.edit({
             embeds: [
               embed,
