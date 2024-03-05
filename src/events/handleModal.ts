@@ -13,19 +13,25 @@ import { COLOR, FOOTER_VALUE } from "../config/constant";
 import db from "../utils/database";
 import { TemplateSchemaType } from "../types";
 
+function isValidUrl(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
 async function isValidImageUrl(url: string): Promise<boolean> {
   try {
     const response = await fetch(url, { method: "HEAD" });
-
     if (!response.ok) {
       return false;
     }
-
     const contentType = response.headers.get("Content-Type");
     if (!contentType || !contentType.startsWith("image/")) {
       return false;
     }
-
     return true;
   } catch (error) {
     return false;
@@ -47,7 +53,8 @@ export default {
       const description = interaction.fields.getTextInputValue("description");
       const image = interaction.fields.getTextInputValue("image") || "";
       const images = image.split("\n");
-      const validImages = images.filter(url => isValidImageUrl(url));
+      const validUrl = images.filter(url => isValidUrl(url));
+      const validImages = validUrl.filter(url => isValidImageUrl(url));
 
       const data = await (await db())
         .collection("templates")
@@ -105,7 +112,8 @@ export default {
         const description = interaction.fields.getTextInputValue("description");
         const image = interaction.fields.getTextInputValue("image") || "none";
         const images = image.split("\n");
-        const validImages = images.filter(url => isValidImageUrl(url));
+        const validUrl = images.filter(url => isValidUrl(url));
+        const validImages = validUrl.filter(url => isValidImageUrl(url));
 
         const embeds: EmbedBuilder[] = [];
         const embed = new EmbedBuilder()
@@ -183,8 +191,8 @@ export default {
           await interaction.reply({ content: "Image sent successfully", ephemeral: true });
         }
       } else if (action === "edit") {
-        const title = interaction.fields.getTextInputValue("title");
-        const description = interaction.fields.getTextInputValue("description");
+        const title = interaction.fields.getTextInputValue("title")||null;
+        const description = interaction.fields.getTextInputValue("description")||null;
         if (!messageId || !channelId || !type) {
           await interaction.reply({ content: "Invalid data received", ephemeral: true });
           return;
@@ -196,18 +204,23 @@ export default {
         if (type === "announce") {
           const images = (interaction.fields.getTextInputValue("image") || "")
             .split("\n")
-            .filter(url => isValidImageUrl(url));
+            .filter(url => isValidUrl(url));
+          const imageUrl=images.filter(url=>isValidImageUrl(url))
           const embed = new EmbedBuilder()
             .setTitle(title)
             .setDescription(description)
             .setColor(COLOR.WHITE as ColorResolvable)
             .setTimestamp()
             .setFooter({ text: FOOTER_VALUE })
-            .setImage(images.shift() || null);
+            .setImage(imageUrl.shift() || null);
+          if (!title && !description) {
+            await interaction.reply({ content: "Both Title and Description can't be empty", ephemeral: true });
+            return;
+          }
           await message.edit({
             embeds: [
               embed,
-              ...images.map(image => {
+              ...imageUrl.map(image => {
                 return new EmbedBuilder().setImage(image).setColor(COLOR.WHITE as ColorResolvable);
               }),
             ],
