@@ -12,7 +12,6 @@ import {
 import { COLOR, FOOTER_VALUE } from "../config/constant";
 import db from "../utils/database";
 import { TemplateSchemaType } from "../types";
-import { url } from "inspector";
 
 function isValidUrl(url: string): boolean {
   try {
