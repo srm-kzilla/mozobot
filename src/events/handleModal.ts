@@ -12,6 +12,7 @@ import {
 import { COLOR, FOOTER_VALUE } from "../config/constant";
 import db from "../utils/database";
 import { TemplateSchemaType } from "../types";
+import { url } from "inspector";
 
 function isValidUrl(url: string): boolean {
   try {
@@ -125,7 +126,7 @@ export default {
 
         if (image === "none") {
           if (mention === "none") {
-            message = await channel.send({ embeds: [embed] });
+            message = await channel.send({ content: `📢 Announcement`, embeds: [embed] });
           } else {
             message = await channel.send({ content: `📢 Announcement ${mention}`, embeds: [embed] });
           }
@@ -155,7 +156,7 @@ export default {
           });
           return;
         }
-        message = await channel.send({ embeds: embeds });
+        message = await channel.send({ content: `📢 Announcement`, embeds: embeds });
         await interaction.reply({
           content: `Embed sent to <#${channel.id}>`,
           components: [createComponent(message.id)],
@@ -183,16 +184,19 @@ export default {
       } else if (action === "images") {
         const image = interaction.fields.getTextInputValue("image") || "none";
         const images = image.split("\n");
-        const imageUrls = images.filter(url => isValidImageUrl(url));
-        if (imageUrls) {
-          for (const imageUrl of imageUrls) {
+        const imageUrls = images.filter(url => isValidUrl(url));
+        const validImages = imageUrls.filter(url => isValidImageUrl(url));
+        if (validImages.length > 0) {
+          for (const imageUrl of validImages) {
             await channel.send({ content: imageUrl });
           }
           await interaction.reply({ content: "Image sent successfully", ephemeral: true });
+        } else {
+          await interaction.reply({ content: "Invalid Image", ephemeral: true });
         }
       } else if (action === "edit") {
-        const title = interaction.fields.getTextInputValue("title")||null;
-        const description = interaction.fields.getTextInputValue("description")||null;
+        const title = interaction.fields.getTextInputValue("title") || null;
+        const description = interaction.fields.getTextInputValue("description") || null;
         if (!messageId || !channelId || !type) {
           await interaction.reply({ content: "Invalid data received", ephemeral: true });
           return;
@@ -205,7 +209,7 @@ export default {
           const images = (interaction.fields.getTextInputValue("image") || "")
             .split("\n")
             .filter(url => isValidUrl(url));
-          const imageUrl=images.filter(url=>isValidImageUrl(url))
+          const imageUrl = images.filter(url => isValidImageUrl(url));
           const embed = new EmbedBuilder()
             .setTitle(title)
             .setDescription(description)
