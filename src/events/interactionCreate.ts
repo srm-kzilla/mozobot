@@ -1,5 +1,6 @@
 import { Collection, Events, Interaction } from "discord.js";
 import { Command } from "../interface";
+import env from "../config/index";
 
 export default {
   name: Events.InteractionCreate,
@@ -16,8 +17,7 @@ export default {
     }
     if (command.isMod) {
       const interactionChannelId = interaction.channelId;
-      const envChannelId = process.env.MOD_CHANNEL_ID;
-
+      const envChannelId = env.MOD_CHANNEL_ID;
       if (interactionChannelId !== envChannelId) {
         await interaction.reply({
           content: "This command can only be executed in a specific channel.",
