@@ -1,5 +1,6 @@
 import { Collection, Events, Interaction } from "discord.js";
 import { Command } from "../interface";
+import env from "../config/index";
 
 export default {
   name: Events.InteractionCreate,
@@ -14,6 +15,12 @@ export default {
       await interaction.reply({ content: "Command not found", ephemeral: true });
       return;
     }
+
+
+    if (command.isMod) {
+      const interactionChannelId = interaction.channelId;
+      const envChannelId = env.MOD_CHANNEL_ID;
+
 
     const interactionChannelId = interaction.channelId;
     const envChannelId = process.env.CHANNEL_ID;
