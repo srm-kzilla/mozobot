@@ -15,13 +15,14 @@ export default {
       await interaction.reply({ content: "Command not found", ephemeral: true });
       return;
     }
+
     if (command.isMod) {
       const interactionChannelId = interaction.channelId;
       const envChannelId = env.MOD_CHANNEL_ID;
 
-      if (interactionChannelId !== envChannelId) {
+      if (command.isMod && interactionChannelId !== envChannelId) {
         await interaction.reply({
-          content: "This command can only be executed in a specific channel.",
+          content: "Permission denied. This command can only be executed in a specific channel.",
           ephemeral: true,
         });
         return;
