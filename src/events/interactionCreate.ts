@@ -16,7 +16,7 @@ export default {
     }
     if (command.isMod) {
       const interactionChannelId = interaction.channelId;
-      const envChannelId = process.env.CHANNEL_ID;
+      const envChannelId = process.env.MOD_CHANNEL_ID;
 
       if (interactionChannelId !== envChannelId) {
         await interaction.reply({

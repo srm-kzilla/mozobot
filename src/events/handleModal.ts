@@ -12,15 +12,9 @@ import {
 import { COLOR, FOOTER_VALUE } from "../config/constant";
 import db from "../utils/database";
 import { TemplateSchemaType } from "../types";
+import { z } from "zod";
 
-function isValidUrl(url: string): boolean {
-  try {
-    new URL(url);
-    return true;
-  } catch (err) {
-    return false;
-  }
-}
+const isValidUrl = (url: string): boolean => z.string().url().safeParse(url).success;
 
 async function isValidImageUrl(url: string): Promise<boolean> {
   try {
