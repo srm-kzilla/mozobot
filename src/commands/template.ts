@@ -111,9 +111,8 @@ export default {
         .toArray();
 
       if (data.length === 0) {
-        await interaction.reply({
+        await interaction.editReply({
           content: "No Templates found! use `/template create` to create one!",
-          ephemeral: true,
         });
         return;
       }
