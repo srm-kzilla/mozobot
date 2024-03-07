@@ -18,7 +18,6 @@ export default {
     if (command.isMod) {
       const interactionChannelId = interaction.channelId;
       const envChannelId = env.MOD_CHANNEL_ID;
-
       if (interactionChannelId !== envChannelId) {
         await interaction.reply({
           content: "This command can only be executed in a specific channel.",

@@ -12,20 +12,20 @@ import {
 import { COLOR, FOOTER_VALUE } from "../config/constant";
 import db from "../utils/database";
 import { TemplateSchemaType } from "../types";
+import { z } from "zod";
+
+const isValidUrl = (url: string): boolean => z.string().url().safeParse(url).success;
 
 async function isValidImageUrl(url: string): Promise<boolean> {
   try {
     const response = await fetch(url, { method: "HEAD" });
-
     if (!response.ok) {
       return false;
     }
-
     const contentType = response.headers.get("Content-Type");
     if (!contentType || !contentType.startsWith("image/")) {
       return false;
     }
-
     return true;
   } catch (error) {
     return false;
@@ -47,7 +47,8 @@ export default {
       const description = interaction.fields.getTextInputValue("description");
       const image = interaction.fields.getTextInputValue("image") || "";
       const images = image.split("\n");
-      const validImages = images.filter(url => isValidImageUrl(url));
+      const validUrl = images.filter(url => isValidUrl(url));
+      const validImages = validUrl.filter(url => isValidImageUrl(url));
 
       const data = await (await db())
         .collection("templates")
@@ -105,7 +106,8 @@ export default {
         const description = interaction.fields.getTextInputValue("description");
         const image = interaction.fields.getTextInputValue("image") || "none";
         const images = image.split("\n");
-        const validImages = images.filter(url => isValidImageUrl(url));
+        const validUrl = images.filter(url => isValidUrl(url));
+        const validImages = validUrl.filter(url => isValidImageUrl(url));
 
         const embeds: EmbedBuilder[] = [];
         const embed = new EmbedBuilder()
@@ -117,7 +119,7 @@ export default {
 
         if (image === "none") {
           if (mention === "none") {
-            message = await channel.send({ embeds: [embed] });
+            message = await channel.send({ content: `📢 Announcement`, embeds: [embed] });
           } else {
             message = await channel.send({ content: `📢 Announcement ${mention}`, embeds: [embed] });
           }
@@ -147,7 +149,7 @@ export default {
           });
           return;
         }
-        message = await channel.send({ embeds: embeds });
+        message = await channel.send({ content: `📢 Announcement`, embeds: embeds });
         await interaction.reply({
           content: `Embed sent to <#${channel.id}>`,
           components: [createComponent(message.id)],
@@ -175,20 +177,29 @@ export default {
       } else if (action === "images") {
         const image = interaction.fields.getTextInputValue("image") || "none";
         const images = image.split("\n");
-        const imageUrls = images.filter(url => isValidImageUrl(url));
-        if (imageUrls) {
-          for (const imageUrl of imageUrls) {
+        const imageUrls = images.filter(url => isValidUrl(url));
+        const validImages = imageUrls.filter(url => isValidImageUrl(url));
+        if (validImages.length > 0) {
+          for (const imageUrl of validImages) {
             await channel.send({ content: imageUrl });
           }
           await interaction.reply({ content: "Image sent successfully", ephemeral: true });
+        } else {
+          await interaction.reply({ content: "Invalid Image", ephemeral: true });
         }
       } else if (action === "edit") {
-        const title = interaction.fields.getTextInputValue("title");
-        const description = interaction.fields.getTextInputValue("description");
+        const title = interaction.fields.getTextInputValue("title") || null;
+        const description = interaction.fields.getTextInputValue("description") || null;
         if (!messageId || !channelId || !type) {
           await interaction.reply({ content: "Invalid data received", ephemeral: true });
           return;
         }
+
+        if (!title && !description) {
+          await interaction.reply({ content: "Both Title and Description can't be empty", ephemeral: true });
+          return;
+        }
+
         const channel = await interaction.client.channels.fetch(channelId);
         if (!channel) return;
         // @ts-expect-error: type issue with discord.js
@@ -196,18 +207,19 @@ export default {
         if (type === "announce") {
           const images = (interaction.fields.getTextInputValue("image") || "")
             .split("\n")
-            .filter(url => isValidImageUrl(url));
+            .filter(url => isValidUrl(url));
+          const imageUrl = images.filter(url => isValidImageUrl(url));
           const embed = new EmbedBuilder()
             .setTitle(title)
             .setDescription(description)
             .setColor(COLOR.WHITE as ColorResolvable)
             .setTimestamp()
             .setFooter({ text: FOOTER_VALUE })
-            .setImage(images.shift() || null);
+            .setImage(imageUrl.shift() || null);
           await message.edit({
             embeds: [
               embed,
-              ...images.map(image => {
+              ...imageUrl.map(image => {
                 return new EmbedBuilder().setImage(image).setColor(COLOR.WHITE as ColorResolvable);
               }),
             ],

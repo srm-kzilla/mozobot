@@ -75,6 +75,7 @@ export default {
           } else {
             await channel.send({ content: "📢 Announcement", embeds: [embed] });
             await interaction.reply({ content: `Embeds sent to <#${channel.id}>` });
+            return;
           }
           await channel.send({ content: "📢 Announcement", embeds: embeds });
           await interaction.reply({ content: `Embeds sent to <#${channel.id}>` });
