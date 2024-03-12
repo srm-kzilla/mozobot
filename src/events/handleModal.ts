@@ -227,7 +227,7 @@ export default {
         } else {
           await message.edit({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
         }
-        await interaction.reply({ content: "Edited message", ephemeral: true });
+        await interaction.reply({ content: "Edited message", ephemeral: false });
       }
     }
   },
