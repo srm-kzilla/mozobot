@@ -8,6 +8,7 @@ import {
   ButtonStyle,
   ActionRowBuilder,
   Message,
+  PermissionFlagsBits,
 } from "discord.js";
 import { COLOR, FOOTER_VALUE } from "../config/constant";
 import db from "../utils/database";
@@ -188,6 +189,7 @@ export default {
           await interaction.reply({ content: "Invalid Image", ephemeral: true });
         }
       } else if (action === "edit") {
+        interaction.memberPermissions?.has(PermissionFlagsBits.ManageMessages);
         const title = interaction.fields.getTextInputValue("title") || null;
         const description = interaction.fields.getTextInputValue("description") || null;
         if (!messageId || !channelId || !type) {
