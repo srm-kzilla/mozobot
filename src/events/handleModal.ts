@@ -8,6 +8,7 @@ import {
   ButtonStyle,
   ActionRowBuilder,
   Message,
+  PermissionFlagsBits,
 } from "discord.js";
 import { COLOR, FOOTER_VALUE } from "../config/constant";
 import db from "../utils/database";
@@ -188,6 +189,11 @@ export default {
           await interaction.reply({ content: "Invalid Image", ephemeral: true });
         }
       } else if (action === "edit") {
+        if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageMessages)) {
+          await interaction.reply({ content: "You don’t have permission to run this command", ephemeral: true });
+          return;
+        }
+
         const title = interaction.fields.getTextInputValue("title") || null;
         const description = interaction.fields.getTextInputValue("description") || null;
         if (!messageId || !channelId || !type) {
@@ -227,7 +233,7 @@ export default {
         } else {
           await message.edit({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
         }
-        await interaction.reply({ content: "Edited message", ephemeral: true });
+        await interaction.reply({ content: "Edited message", ephemeral: false });
       }
     }
   },
