@@ -132,33 +132,36 @@ export default {
           return;
         }
         const tMsgInfo = msgCollection.get(`${channelId}-${messageId}`);
-        console.log(tMsgInfo);
 
-        const channel = await interaction.client.channels.fetch(channelId);
+        const channel = interaction.guild.channels.cache.get(channelId);
         if (!channel) return;
-        // @ts-expect-error: type issue with discord.js
+        if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement) {
+          return;
+        }
+
         const message = await channel.messages.fetch(messageId);
         if (!message) {
           await interaction.editReply({ content: "Message not found" });
+        } else {
+          await message.delete();
+          await interaction.editReply({ content: "Deleted Successfully" });
+        }
+
+        if (!tMsgInfo) return;
+        const [tMessageId, tChannelId] = tMsgInfo.split("-");
+        if (!tMessageId || !tChannelId) return;
+
+        const tchannel = interaction.guild.channels.cache.get(tChannelId);
+        if (!tchannel) return;
+
+        if (tchannel.type !== ChannelType.GuildText && tchannel.type !== ChannelType.GuildAnnouncement) {
           return;
         }
-        await message.delete();
-        await interaction.editReply({ content: "Deleted Successfully" });
-        if (tMsgInfo) {
-          const [messageId, channelId] = tMsgInfo.split("-");
-          if (!messageId || !channelId) {
-            return;
-          }
-          const tchannel = interaction.guild.channels.cache.get(channelId);
-          if (!tchannel || tchannel.type !== ChannelType.GuildText) {
-            return;
-          }
-          const tmsg = await tchannel.messages.fetch(messageId);
-          if (!tmsg) {
-            return;
-          }
-          await tmsg.edit({ content: "Message has been deleted", components: [] });
-        }
+
+        const tmsg = await tchannel.messages.fetch(tMessageId);
+        if (!tmsg) return;
+
+        await tmsg.edit({ content: "Message has been deleted", components: [] });
       }
     }
   },
