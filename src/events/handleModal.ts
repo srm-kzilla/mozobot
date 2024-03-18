@@ -8,12 +8,13 @@ import {
   ButtonStyle,
   ActionRowBuilder,
   Message,
-  PermissionFlagsBits,
+  Colors,
 } from "discord.js";
 import { COLOR, FOOTER_VALUE } from "../config/constant";
 import db from "../utils/database";
 import { TemplateSchemaType } from "../types";
 import { z } from "zod";
+import { msgCollection } from "./handleButton";
 
 const isValidUrl = (url: string): boolean => z.string().url().safeParse(url).success;
 
@@ -56,7 +57,7 @@ export default {
         .find({ guildId: interaction.guildId, isDeleted: false })
         .toArray();
       if (data.length >= 25) {
-        return interaction.reply({ content: "You can only have max 25 templates", ephemeral: true });
+        return interaction.reply({ content: "You can only have max 25 templates", ephemeral: false });
       }
 
       const templateExists = data.some(template => template.title === title || template.description === description);
@@ -82,7 +83,7 @@ export default {
       const channel = interaction.guild.channels.cache.get(channelId);
 
       if (!channel) {
-        await interaction.reply({ content: "Target Channel Not Found", ephemeral: true });
+        await interaction.reply({ content: "Target Channel Not Found", ephemeral: false });
         return;
       }
 
@@ -124,8 +125,13 @@ export default {
           } else {
             message = await channel.send({ content: `📢 Announcement ${mention}`, embeds: [embed] });
           }
+          msgCollection.set(`${channelId}-${message.id}`, `${message.id}-${message.channelId}-${message.guildId}`);
           const button = createComponent(message.id);
-          await interaction.reply({ content: `Embed sent to <#${channel.id}>`, components: [button], ephemeral: true });
+          await interaction.reply({
+            content: `Embed sent to <#${channel.id}>`,
+            components: [button],
+            ephemeral: false,
+          });
           return;
         }
 
@@ -143,38 +149,50 @@ export default {
         });
         if (mention !== "none") {
           message = await channel.send({ content: `📢 Announcement ${mention}`, embeds: embeds });
-          await interaction.reply({
+
+          const tMsg = await interaction.reply({
             content: `Embed sent to <#${channel.id}>`,
             components: [createComponent(message.id)],
             ephemeral: true,
+            fetchReply: true,
           });
+          msgCollection.set(`${channelId}-${message.id}`, `${tMsg.id}-${tMsg.channelId}-${tMsg.guildId}`);
           return;
         }
         message = await channel.send({ content: `📢 Announcement`, embeds: embeds });
-        await interaction.reply({
+
+        const tMsg = await interaction.reply({
           content: `Embed sent to <#${channel.id}>`,
           components: [createComponent(message.id)],
           ephemeral: true,
+          fetchReply: true,
         });
+        msgCollection.set(`${channelId}-${message.id}`, `${tMsg.id}-${tMsg.channelId}-${tMsg.guildId}`);
       } else if (action === "echo") {
         const title = interaction.fields.getTextInputValue("title");
         const description = interaction.fields.getTextInputValue("description");
         if (mention !== "none") {
           message = await channel.send({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
-          await interaction.reply({
+
+          const tMsg = await interaction.reply({
             content: `Message sent to <#${channel.id}>`,
             components: [createComponent(message.id)],
-            ephemeral: true,
+            ephemeral: false,
+            fetchReply: true,
           });
+          msgCollection.set(`${channelId}-${message.id}`, `${tMsg.id}-${tMsg.channelId}-${tMsg.guildId}`);
           return;
         }
 
         message = await channel.send({ content: `# ${title}\n${description}` });
-        await interaction.reply({
+
+        const tMsg = await interaction.reply({
           content: `Message sent to <#${channel.id}>`,
           components: [createComponent(message.id)],
-          ephemeral: true,
+          ephemeral: false,
+          fetchReply: true,
         });
+        msgCollection.set(`${channelId}-${message.id}`, `${tMsg.id}-${tMsg.channelId}-${tMsg.guildId}`);
       } else if (action === "images") {
         const image = interaction.fields.getTextInputValue("image") || "none";
         const images = image.split("\n");
@@ -184,25 +202,20 @@ export default {
           for (const imageUrl of validImages) {
             await channel.send({ content: imageUrl });
           }
-          await interaction.reply({ content: "Image sent successfully", ephemeral: true });
+          await interaction.reply({ content: "Image sent successfully", ephemeral: false });
         } else {
-          await interaction.reply({ content: "Invalid Image", ephemeral: true });
+          await interaction.reply({ content: "Invalid Image", ephemeral: false });
         }
       } else if (action === "edit") {
-        if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageMessages)) {
-          await interaction.reply({ content: "You don’t have permission to run this command", ephemeral: true });
-          return;
-        }
-
         const title = interaction.fields.getTextInputValue("title") || null;
         const description = interaction.fields.getTextInputValue("description") || null;
         if (!messageId || !channelId || !type) {
-          await interaction.reply({ content: "Invalid data received", ephemeral: true });
+          await interaction.reply({ content: "Invalid data received", ephemeral: false });
           return;
         }
 
         if (!title && !description) {
-          await interaction.reply({ content: "Both Title and Description can't be empty", ephemeral: true });
+          await interaction.reply({ content: "Both Title and Description can't be empty", ephemeral: false });
           return;
         }
 
@@ -218,7 +231,7 @@ export default {
           const embed = new EmbedBuilder()
             .setTitle(title)
             .setDescription(description)
-            .setColor(COLOR.WHITE as ColorResolvable)
+            .setColor(Colors.White)
             .setTimestamp()
             .setFooter({ text: FOOTER_VALUE })
             .setImage(imageUrl.shift() || null);
@@ -226,14 +239,14 @@ export default {
             embeds: [
               embed,
               ...imageUrl.map(image => {
-                return new EmbedBuilder().setImage(image).setColor(COLOR.WHITE as ColorResolvable);
+                return new EmbedBuilder().setImage(image).setColor(Colors.White);
               }),
             ],
           });
         } else {
           await message.edit({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
         }
-        await interaction.reply({ content: "Edited message", ephemeral: false });
+        await interaction.reply({ content: "Edited message", ephemeral: false, components: [] });
       }
     }
   },

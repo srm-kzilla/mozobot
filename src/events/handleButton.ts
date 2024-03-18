@@ -8,10 +8,15 @@ import {
   TextInputStyle,
   ActionRowBuilder,
   ModalBuilder,
+  PermissionFlagsBits,
+  Collection,
+  Colors,
 } from "discord.js";
 import db from "../utils/database";
 import { ObjectId } from "mongodb";
 import { COLOR, FOOTER_VALUE } from "../config/constant";
+
+export const msgCollection: Collection<string, string> = new Collection();
 
 export default {
   name: Events.InteractionCreate,
@@ -20,6 +25,10 @@ export default {
   async execute(interaction: Interaction) {
     if (interaction.isButton()) {
       if (!interaction.guild) return;
+      if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageMessages)) {
+        await interaction.reply({ content: "You don't have permission to run this command", ephemeral: true });
+        return;
+      }
       const [button, templateId, channelId, messageId, action] = interaction.customId.split("-");
       if (button === "announce" || button === "echo") {
         if (!templateId || !channelId) {
@@ -69,7 +78,7 @@ export default {
             embeds.push(embed);
 
             images.forEach((url: string) => {
-              const newEmbed = new EmbedBuilder().setImage(url).setColor(COLOR.WHITE as ColorResolvable);
+              const newEmbed = new EmbedBuilder().setImage(url).setColor(Colors.White);
               embeds.push(newEmbed);
             });
           } else {
@@ -117,16 +126,42 @@ export default {
         modal.addComponents(...actionRows.slice(0, action === "announce" ? 3 : 2));
         await interaction.showModal(modal);
       } else if (button === "delete") {
+        await interaction.deferReply({ ephemeral: true });
         if (!messageId || !channelId) {
-          await interaction.reply({ content: "Invalid data received", ephemeral: true });
+          await interaction.editReply({ content: "Invalid data received" });
           return;
         }
-        const channel = await interaction.client.channels.fetch(channelId);
+        const tMsgInfo = msgCollection.get(`${channelId}-${messageId}`);
+
+        const channel = interaction.guild.channels.cache.get(channelId);
         if (!channel) return;
-        // @ts-expect-error: type issue with discord.js
+        if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement) {
+          return;
+        }
+
         const message = await channel.messages.fetch(messageId);
-        await message.delete();
-        await interaction.reply({ content: "Deleted Successfully", ephemeral: true });
+        if (!message) {
+          await interaction.editReply({ content: "Message not found" });
+        } else {
+          await message.delete();
+          await interaction.editReply({ content: "Deleted Successfully" });
+        }
+
+        if (!tMsgInfo) return;
+        const [tMessageId, tChannelId] = tMsgInfo.split("-");
+        if (!tMessageId || !tChannelId) return;
+
+        const tchannel = interaction.guild.channels.cache.get(tChannelId);
+        if (!tchannel) return;
+
+        if (tchannel.type !== ChannelType.GuildText && tchannel.type !== ChannelType.GuildAnnouncement) {
+          return;
+        }
+
+        const tmsg = await tchannel.messages.fetch(tMessageId);
+        if (!tmsg) return;
+
+        await tmsg.edit({ content: "Message has been deleted", components: [] });
       }
     }
   },
