@@ -1,4 +1,4 @@
-import { Collection, Events, Interaction } from "discord.js";
+import { Collection, Events, GuildMemberRoleManager, Interaction } from "discord.js";
 import { Command } from "../interface";
 import env from "../config/index";
 
@@ -18,9 +18,18 @@ export default {
 
     const interactionChannelId = interaction.channelId;
     const envChannelId = env.MOD_CHANNEL_ID;
+    const modRoleId = env.MOD_ROLE_ID;
     if (command.isMod && interactionChannelId !== envChannelId) {
       await interaction.reply({
         content: "This command can only be executed in a specific channel.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    if (command.isMod && !(interaction.member?.roles as GuildMemberRoleManager).resolve(modRoleId)) {
+      await interaction.reply({
+        content: "You do not have the required permissions to execute this command.",
         ephemeral: true,
       });
       return;
