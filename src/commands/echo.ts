@@ -6,7 +6,6 @@ import {
   SlashCommandChannelOption,
   TextInputBuilder,
   TextInputStyle,
-  PermissionFlagsBits,
 } from "discord.js";
 import { Command } from "../interface";
 
@@ -15,7 +14,6 @@ export default {
     .setName("echo")
     .setDescription("Announce a message to a channel")
     .setDMPermission(false)
-    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addChannelOption((option: SlashCommandChannelOption) => {
       return option
         .setName("channel")
