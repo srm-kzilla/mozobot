@@ -10,7 +10,6 @@ const envSchema = z.object({
   NODE_ENV: z.string().optional().default("development"),
   DATABASE_URI: z.string(),
   MOD_CHANNEL_ID: z.string(),
-  MOD_ROLE_ID: z.string(),
 });
 
 const env = envSchema.parse(process.env);
@@ -23,5 +22,4 @@ export default {
   NODE_ENV: env.NODE_ENV,
   DB_URI: env.DATABASE_URI,
   MOD_CHANNEL_ID: env.MOD_CHANNEL_ID,
-  MOD_ROLE_ID: env.MOD_ROLE_ID,
 };
