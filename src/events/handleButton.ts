@@ -64,7 +64,7 @@ export default {
             .setTimestamp()
             .setFooter({ text: FOOTER_VALUE });
           if (!images) {
-            await channel.send({ content: "📢 Announcement - <@&937980942272847892>", embeds: [embed] });
+            await channel.send({ content: "📢 Announcement - <@&1221428016266219714>", embeds: [embed] });
             await interaction.reply({ content: `Embeds sent to <#${channel.id}>` });
             return;
           }
@@ -82,14 +82,14 @@ export default {
               embeds.push(newEmbed);
             });
           } else {
-            await channel.send({ content: "📢 Announcement - <@&937980942272847892>", embeds: [embed] });
+            await channel.send({ content: "📢 Announcement - <@&1221428016266219714>", embeds: [embed] });
             await interaction.reply({ content: `Embeds sent to <#${channel.id}>` });
             return;
           }
-          await channel.send({ content: "📢 Announcement - <@&937980942272847892>", embeds: embeds });
+          await channel.send({ content: "📢 Announcement - <@&1221428016266219714>", embeds: embeds });
           await interaction.reply({ content: `Embeds sent to <#${channel.id}>` });
         } else if (button === "echo") {
-          await channel.send({ content: `📢 Announcement - <@&937980942272847892>\n# ${title}\n${description}` });
+          await channel.send({ content: `📢 Announcement - <@&1221428016266219714>\n# ${title}\n${description}` });
           await interaction.reply({ content: `Message sent to <#${channel.id}>` });
         }
       } else if (button === "edit") {
