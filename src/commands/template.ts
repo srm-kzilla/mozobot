@@ -31,6 +31,7 @@ export default {
             .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement),
         ),
     )
+    // todo: take role mention input also
     .addSubcommand((subcommand: SlashCommandSubcommandBuilder) =>
       subcommand.setName("delete").setDescription("Deletes the Templates"),
     ) as SlashCommandBuilder,
