@@ -1,64 +1,51 @@
-import { Events, Interaction, ChannelType, PermissionFlagsBits, Collection } from "discord.js";
-
-export const msgCollection: Collection<string, string> = new Collection();
+import { Events, Interaction, ChannelType, GuildMemberRoleManager, Message } from "discord.js";
+import config from "../config";
 
 export default {
   name: Events.InteractionCreate,
   once: false,
 
   async execute(interaction: Interaction) {
-    if (interaction.isButton()) {
-      if (!interaction.guild) return;
-      if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageMessages)) {
-        await interaction.reply({ content: "You don't have permission to run this command", ephemeral: true });
-        return;
-      }
-      const [button, _templateId, channelId, messageId] = interaction.customId.split("-");
+    if (!interaction.isButton()) return;
+    if (!interaction.guild) return;
+    if (!(interaction.member?.roles as GuildMemberRoleManager).resolve(config.MOD_ROLE_ID)) {
+      await interaction.reply({
+        content: "You do not have the required roles to execute this action.",
+        ephemeral: true,
+      });
+      return;
+    }
+    const [button, , channelId, messageId] = interaction.customId.split("-");
+    let message: Message;
+    if (button !== "delete") return;
+    await interaction.deferReply({ ephemeral: true });
+    if (!messageId || !channelId) {
+      await interaction.editReply({ content: "Invalid data received" });
+      return;
+    }
 
-      if (button !== "delete") return;
-      await interaction.deferReply({ ephemeral: true });
-      if (!messageId || !channelId) {
-        await interaction.editReply({ content: "Invalid data received" });
-        return;
-      }
-      const tMsgInfo = msgCollection.get(`${channelId}-${messageId}`);
-      if (!tMsgInfo) {
-        interaction.editReply({ content: "Not able to fetch message. Please Delete Manually." });
-        return;
-      }
+    const channel = interaction.guild.channels.cache.get(channelId);
+    if (!channel) return;
+    if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement) {
+      return;
+    }
 
-      const channel = interaction.guild.channels.cache.get(channelId);
-      if (!channel) return;
-      if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement) {
-        return;
-      }
-      const [tMessageId, tChannelId] = tMsgInfo.split("-");
-      if (!tMessageId || !tChannelId) return;
+    try {
+      message = await channel.messages.fetch(messageId);
 
-      const message = await channel.messages.fetch(messageId);
       if (!message) {
-        await interaction.editReply({ content: "Not able to fetch message. Please Delete Manually." });
+        await interaction.editReply({ content: "Message not found" });
       } else {
         await message.delete();
         await interaction.editReply({ content: "Deleted Successfully" });
       }
-
-      const tchannel = interaction.guild.channels.cache.get(tChannelId);
-      if (!tchannel) return;
-
-      if (tchannel.type !== ChannelType.GuildText && tchannel.type !== ChannelType.GuildAnnouncement) {
-        return;
-      }
-
-      const tmsg = await tchannel.messages.fetch(tMessageId);
-      if (!tmsg) return;
-
-      if (!message) {
-        await tmsg.edit({ content: "Failed Attempt to delete message.", components: [] });
-      } else {
-        await tmsg.edit({ content: "Message has been deleted.", components: [] });
-        return;
-      }
+    } catch {
+      await interaction.editReply({ content: "Unable to Delete." });
+    }
+    try {
+      await interaction.message.edit({ content: "Message has been deleted", components: [] });
+    } catch (err) {
+      console.log(err);
     }
   },
 };

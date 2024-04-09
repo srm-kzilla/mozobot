@@ -1,18 +1,8 @@
-import {
-  ChannelType,
-  Collection,
-  ColorResolvable,
-  Colors,
-  EmbedBuilder,
-  Events,
-  Interaction,
-  PermissionFlagsBits,
-} from "discord.js";
+import { ChannelType, Collection, Colors, EmbedBuilder, Events, GuildMemberRoleManager, Interaction } from "discord.js";
 import { ObjectId } from "mongodb";
-import { COLOR, FOOTER_VALUE } from "../../config/constant";
+import config from "../../config";
+import { FOOTER_VALUE } from "../../config/constant";
 import db from "../../utils/database";
-
-export const msgCollection: Collection<string, string> = new Collection();
 
 export default {
   name: Events.InteractionCreate,
@@ -21,8 +11,11 @@ export default {
   async execute(interaction: Interaction) {
     if (!interaction.isButton()) return;
     if (!interaction.guild) return;
-    if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageMessages)) {
-      await interaction.reply({ content: "You don't have permission to run this command", ephemeral: true });
+    if (!(interaction.member?.roles as GuildMemberRoleManager).resolve(config.MOD_ROLE_ID)) {
+      await interaction.reply({
+        content: "You do not have the required roles to execute this action.",
+        ephemeral: true,
+      });
       return;
     }
     const [button, templateId, channelId] = interaction.customId.split("-");

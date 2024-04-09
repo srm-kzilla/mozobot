@@ -1,20 +1,17 @@
 import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   ChannelType,
-  ColorResolvable,
+  Colors,
   EmbedBuilder,
   Events,
   Interaction,
-  ButtonBuilder,
-  ButtonStyle,
-  ActionRowBuilder,
   Message,
-  Colors,
 } from "discord.js";
-import { COLOR, FOOTER_VALUE } from "../config/constant";
 import { z } from "zod";
-import { msgCollection } from "./handleEditButton";
+import { FOOTER_VALUE } from "../config/constant";
 import isValidImageUrl from "../utils/misc";
-
 const isValidUrl = (url: string): boolean => z.string().url().safeParse(url).success;
 
 // TODO: Make this File more readable
@@ -27,8 +24,8 @@ export default {
     if (!interaction.isModalSubmit()) return;
     const [action, channelId, mention, messageId, type] = interaction.customId.split("-");
     let message: Message;
-    if (action === "template") return;
     if (!action || !channelId) return;
+    if (action !== "announce" && action !== "echo" && action !== "images" && action !== "edit") return;
 
     const channel = interaction.guild.channels.cache.get(channelId);
 
@@ -55,7 +52,7 @@ export default {
 
     if (action === "announce") {
       const title = interaction.fields.getTextInputValue("title");
-      const description = interaction.fields.getTextInputValue("description");
+      const description = interaction.fields.getTextInputValue("description") || " ";
       const image = interaction.fields.getTextInputValue("image") || "none";
       const images = image.split("\n");
       const validUrl = images.filter(url => isValidUrl(url));
@@ -75,7 +72,6 @@ export default {
         } else {
           message = await channel.send({ content: `📢 Announcement ${mention}`, embeds: [embed] });
         }
-        msgCollection.set(`${channelId}-${message.id}`, `${message.id}-${message.channelId}-${message.guildId}`);
         const button = createComponent(message.id);
         await interaction.reply({
           content: `Embed sent to <#${channel.id}>`,
@@ -106,7 +102,6 @@ export default {
           ephemeral: true,
           fetchReply: true,
         });
-        msgCollection.set(`${channelId}-${message.id}`, `${tMsg.id}-${tMsg.channelId}-${tMsg.guildId}`);
         return;
       }
       message = await channel.send({ content: `📢 Announcement`, embeds: embeds });
@@ -117,10 +112,9 @@ export default {
         ephemeral: true,
         fetchReply: true,
       });
-      msgCollection.set(`${channelId}-${message.id}`, `${tMsg.id}-${tMsg.channelId}-${tMsg.guildId}`);
     } else if (action === "echo") {
       const title = interaction.fields.getTextInputValue("title");
-      const description = interaction.fields.getTextInputValue("description");
+      const description = interaction.fields.getTextInputValue("description") || " ";
       if (mention !== "none") {
         message = await channel.send({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
 
@@ -130,7 +124,6 @@ export default {
           ephemeral: false,
           fetchReply: true,
         });
-        msgCollection.set(`${channelId}-${message.id}`, `${tMsg.id}-${tMsg.channelId}-${tMsg.guildId}`);
         return;
       }
 
@@ -142,7 +135,6 @@ export default {
         ephemeral: false,
         fetchReply: true,
       });
-      msgCollection.set(`${channelId}-${message.id}`, `${tMsg.id}-${tMsg.channelId}-${tMsg.guildId}`);
     } else if (action === "images") {
       const image = interaction.fields.getTextInputValue("image") || "none";
       const images = image.split("\n");

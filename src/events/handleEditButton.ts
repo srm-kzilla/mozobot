@@ -1,15 +1,14 @@
 import {
+  ActionRowBuilder,
+  Collection,
   Events,
+  GuildMemberRoleManager,
   Interaction,
+  ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
-  ActionRowBuilder,
-  ModalBuilder,
-  PermissionFlagsBits,
-  Collection,
 } from "discord.js";
-
-export const msgCollection: Collection<string, string> = new Collection();
+import config from "../config";
 
 export default {
   name: Events.InteractionCreate,
@@ -18,11 +17,14 @@ export default {
   async execute(interaction: Interaction) {
     if (!interaction.isButton()) return;
     if (!interaction.guild) return;
-    if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageMessages)) {
-      await interaction.reply({ content: "You don't have permission to run this command", ephemeral: true });
+    if (!(interaction.member?.roles as GuildMemberRoleManager).resolve(config.MOD_ROLE_ID)) {
+      await interaction.reply({
+        content: "You do not have the required roles to execute this action.",
+        ephemeral: true,
+      });
       return;
     }
-    const [button, _templateId, channelId, messageId, action] = interaction.customId.split("-");
+    const [button, , channelId, messageId, action] = interaction.customId.split("-");
     if (button !== "edit") return;
     if (!channelId) {
       await interaction.reply({ content: "Invalid ChannelId", ephemeral: true });

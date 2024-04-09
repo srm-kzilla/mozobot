@@ -1,9 +1,7 @@
-import { ChannelType, Collection, Events, GuildMemberRoleManager, Interaction, PermissionFlagsBits } from "discord.js";
+import { ChannelType, Collection, Events, GuildMemberRoleManager, Interaction } from "discord.js";
 import { ObjectId } from "mongodb";
 import db from "../../utils/database";
 import config from "../../config";
-
-export const msgCollection: Collection<string, string> = new Collection();
 
 export default {
   name: Events.InteractionCreate,
@@ -15,7 +13,7 @@ export default {
 
     if (!(interaction.member?.roles as GuildMemberRoleManager).resolve(config.MOD_ROLE_ID)) {
       await interaction.reply({
-        content: "You do not have the required roles to execute this command.",
+        content: "You do not have the required roles to execute this action.",
         ephemeral: true,
       });
       return;
