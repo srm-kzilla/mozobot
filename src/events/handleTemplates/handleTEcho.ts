@@ -37,10 +37,12 @@ export default {
       await interaction.reply({ content: "Invalid Channel Provided. Please Provide a text channel" });
       return;
     }
+    await interaction.deferReply();
     const template = await (await db())
       .collection("templates")
       .findOne({ _id: new ObjectId(templateId), isDeleted: false });
     if (!template) {
+      interaction.editReply("Not able to find the template from the database");
       return;
     }
     const title = template.title;
@@ -48,6 +50,6 @@ export default {
 
     // TODO: Remove the static role mention and implement dynamic role input
     await channel.send({ content: `📢 Announcement - <@&1221428016266219714>\n# ${title}\n${description}` });
-    await interaction.reply({ content: `Message sent to <#${channel.id}>` });
+    await interaction.editReply({ content: `Message sent to <#${channel.id}>` });
   },
 };

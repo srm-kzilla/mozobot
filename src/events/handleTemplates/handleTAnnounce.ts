@@ -41,7 +41,7 @@ export default {
       await interaction.reply({ content: "Invalid Channel Provided. Please Provide a text channel" });
       return;
     }
-    interaction.deferReply();
+    await interaction.deferReply();
 
     const template = await (await db())
       .collection("templates")
