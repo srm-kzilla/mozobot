@@ -96,7 +96,7 @@ export default {
       if (mention !== "none") {
         message = await channel.send({ content: `📢 Announcement ${mention}`, embeds: embeds });
 
-        const tMsg = await interaction.reply({
+        await interaction.reply({
           content: `Embed sent to <#${channel.id}>`,
           components: [createComponent(message.id)],
           ephemeral: true,
@@ -106,7 +106,7 @@ export default {
       }
       message = await channel.send({ content: `📢 Announcement`, embeds: embeds });
 
-      const tMsg = await interaction.reply({
+      await interaction.reply({
         content: `Embed sent to <#${channel.id}>`,
         components: [createComponent(message.id)],
         ephemeral: true,
@@ -118,7 +118,7 @@ export default {
       if (mention !== "none") {
         message = await channel.send({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
 
-        const tMsg = await interaction.reply({
+        await interaction.reply({
           content: `Message sent to <#${channel.id}>`,
           components: [createComponent(message.id)],
           ephemeral: false,
@@ -129,7 +129,7 @@ export default {
 
       message = await channel.send({ content: `# ${title}\n${description}` });
 
-      const tMsg = await interaction.reply({
+      await interaction.reply({
         content: `Message sent to <#${channel.id}>`,
         components: [createComponent(message.id)],
         ephemeral: false,

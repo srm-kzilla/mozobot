@@ -1,4 +1,4 @@
-import { ChannelType, Collection, Events, GuildMemberRoleManager, Interaction } from "discord.js";
+import { ChannelType, Events, GuildMemberRoleManager, Interaction } from "discord.js";
 import { ObjectId } from "mongodb";
 import db from "../../utils/database";
 import config from "../../config";

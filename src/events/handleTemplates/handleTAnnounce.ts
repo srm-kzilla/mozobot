@@ -1,4 +1,4 @@
-import { ChannelType, Collection, Colors, EmbedBuilder, Events, GuildMemberRoleManager, Interaction } from "discord.js";
+import { ChannelType, Colors, EmbedBuilder, Events, GuildMemberRoleManager, Interaction } from "discord.js";
 import { ObjectId } from "mongodb";
 import config from "../../config";
 import { FOOTER_VALUE } from "../../config/constant";

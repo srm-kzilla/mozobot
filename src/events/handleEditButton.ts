@@ -1,6 +1,5 @@
 import {
   ActionRowBuilder,
-  Collection,
   Events,
   GuildMemberRoleManager,
   Interaction,
