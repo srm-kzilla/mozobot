@@ -21,7 +21,7 @@ export default {
     const modRoleId = env.MOD_ROLE_ID;
     if (command.isMod && interactionChannelId !== envChannelId) {
       await interaction.reply({
-        content: "This command can only be executed in a specific channel.",
+        content: `This command can only be executed in a specific channel. <#${envChannelId}>`,
         ephemeral: true,
       });
       return;
@@ -29,7 +29,7 @@ export default {
 
     if (command.isMod && !(interaction.member?.roles as GuildMemberRoleManager).resolve(modRoleId)) {
       await interaction.reply({
-        content: "You do not have the required permissions to execute this command.",
+        content: "You do not have the required roles to execute this command.",
         ephemeral: true,
       });
       return;
