@@ -68,7 +68,6 @@ export default {
       return;
     }
 
-    // TODO: check if this condition works else refer the previous and revert
     if (images.length < 0) {
       await channel.send({ content: "📢 Announcement - <@&1221428016266219714>", embeds: [embed] });
       await interaction.editReply({ content: `Embeds sent to <#${channel.id}>` });

@@ -31,8 +31,7 @@ export default {
       return interaction.reply({ content: "You can only have max 25 templates", ephemeral: false });
     }
 
-    // TODO: remove check for title cause i think not required
-    const templateExists = data.some(template => template.title === title || template.description === description);
+    const templateExists = data.some(template => template.description === description);
 
     if (templateExists) {
       return interaction.reply({
