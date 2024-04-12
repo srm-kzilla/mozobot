@@ -1,5 +1,3 @@
-// TODO: rename this file to a better name as idk what to keep... maybe shared?
-
 export default async function isValidImageUrl(url: string): Promise<boolean> {
   try {
     const response = await fetch(url, { method: "HEAD" });

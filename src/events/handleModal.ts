@@ -11,7 +11,7 @@ import {
 } from "discord.js";
 import { z } from "zod";
 import { FOOTER_VALUE } from "../config/constant";
-import isValidImageUrl from "../utils/misc";
+import isValidImageUrl from "../utils/helper";
 const isValidUrl = (url: string): boolean => z.string().url().safeParse(url).success;
 
 // TODO: Make this File more readable

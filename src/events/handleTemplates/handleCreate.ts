@@ -2,7 +2,7 @@ import { Events, Interaction } from "discord.js";
 import z from "zod";
 import { TemplateSchemaType } from "../../types";
 import db from "../../utils/database";
-import isValidImageUrl from "../../utils/misc";
+import isValidImageUrl from "../../utils/helper";
 
 const isValidUrl = (url: string): boolean => z.string().url().safeParse(url).success;
 
