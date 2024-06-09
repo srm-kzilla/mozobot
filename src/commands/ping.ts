@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "discord.js";
-import { Command } from "../interface";
+import type { Command } from "../interface";
 
 export default {
   data: new SlashCommandBuilder().setName("ping").setDescription("Replies with Pong!").setDMPermission(false),

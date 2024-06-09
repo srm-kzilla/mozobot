@@ -1,7 +1,7 @@
-import { ChannelType, Events, GuildMemberRoleManager, Interaction } from "discord.js";
+import { ChannelType, Events, type GuildMemberRoleManager, type Interaction } from "discord.js";
 import { ObjectId } from "mongodb";
-import db from "../../utils/database";
 import config from "../../config";
+import db from "../../utils/database";
 
 export default {
   name: Events.InteractionCreate,

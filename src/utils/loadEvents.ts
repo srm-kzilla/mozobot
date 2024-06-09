@@ -1,6 +1,6 @@
-import { Client, Collection } from "discord.js";
+import type { Client, Collection } from "discord.js";
 import { getFiles } from "./getFiles";
-import { Command } from "../interface";
+import type { Command } from "../interface";
 
 export async function loadEvents(client: Client, commands: Collection<string, Command>) {
   const files = await getFiles("events");

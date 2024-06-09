@@ -1,4 +1,4 @@
-import { Events, Interaction } from "discord.js";
+import { Events, type Interaction } from "discord.js";
 import db from "../../utils/database";
 import { ObjectId } from "mongodb";
 

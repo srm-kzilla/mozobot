@@ -1,8 +1,8 @@
 import {
   ActionRowBuilder,
   Events,
-  GuildMemberRoleManager,
-  Interaction,
+  type GuildMemberRoleManager,
+  type Interaction,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
@@ -26,7 +26,10 @@ export default {
     const [button, , channelId, messageId, action] = interaction.customId.split("-");
     if (button !== "edit") return;
     if (!channelId) {
-      await interaction.reply({ content: "Invalid ChannelId", ephemeral: true });
+      await interaction.reply({
+        content: "Invalid ChannelId",
+        ephemeral: true,
+      });
       return;
     }
 

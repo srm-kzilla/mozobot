@@ -1,5 +1,5 @@
 import { Collection, REST, Routes } from "discord.js";
-import { Command } from "../interface";
+import type { Command } from "../interface";
 import config from "../config";
 import { getFiles } from "./getFiles";
 

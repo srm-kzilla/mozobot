@@ -1,5 +1,5 @@
 import { glob } from "glob";
-import * as path from "path";
+import * as path from "node:path";
 
 export async function getFiles(dir: string): Promise<string[]> {
   const files: string[] = (await glob(`./build/${dir}/**/*.js`)).map(file => path.resolve(file));

@@ -1,4 +1,4 @@
-import { Events, Interaction, ChannelType, GuildMemberRoleManager, Message } from "discord.js";
+import { ChannelType, Events, type GuildMemberRoleManager, type Interaction, type Message } from "discord.js";
 import config from "../config";
 
 export default {
@@ -43,7 +43,10 @@ export default {
       await interaction.editReply({ content: "Unable to Delete." });
     }
     try {
-      await interaction.message.edit({ content: "Message has been deleted", components: [] });
+      await interaction.message.edit({
+        content: "Message has been deleted",
+        components: [],
+      });
     } catch (err) {
       console.log(err);
     }
