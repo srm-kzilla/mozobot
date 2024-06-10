@@ -1,4 +1,4 @@
-import { ChannelType, Events, type GuildMemberRoleManager, type Interaction } from "discord.js";
+import { ChannelType, Events,roleMention, type GuildMemberRoleManager, type Interaction } from "discord.js";
 import { ObjectId } from "mongodb";
 import config from "../../config";
 import db from "../../utils/database";
@@ -19,9 +19,9 @@ export default {
       return;
     }
 
-    const [button, templateId, channelId] = interaction.customId.split("-");
+    const [button, templateId, channelId,roleId] = interaction.customId.split("-");
     if (button !== "echo") return;
-    if (!templateId || !channelId) {
+    if (!templateId || !channelId||!roleId) {
       await interaction.reply({ content: "Invalid ChannelId", ephemeral: true });
       return;
     }
@@ -46,8 +46,11 @@ export default {
     const title = template.title;
     const description = template.description;
 
-    // TODO: Remove the static role mention and implement dynamic role input
-    await channel.send({ content: `📢 Announcement - <@&1221428016266219714>\n# ${title}\n${description}` });
+    const isEeveryone = interaction.guild.roles.everyone.id === roleId;
+    const mention = isEeveryone ? "@everyone" : roleMention(roleId);
+    const embed_title = `📢 Announcement ${roleId === "none" ? "" : `- ${mention}`}`;
+
+    await channel.send({ content: `${embed_title}\n# ${title}\n${description}` });
     await interaction.editReply({ content: `Message sent to <#${channel.id}>` });
   },
 };

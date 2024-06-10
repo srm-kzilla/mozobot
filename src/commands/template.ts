@@ -118,7 +118,6 @@ export default {
       }
       const channelId = (interaction.options.getChannel("channel")?.id || interaction.channelId) as string;
       const roleId = interaction.options.getRole("role")?.id || ("none" as string);
-      console.log(channelId, roleId);
       const templatesData = data.map(data => ({
         label: data.title.slice(0, 50),
         description: data.description.slice(0, 50),
