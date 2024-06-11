@@ -3,11 +3,11 @@ import {
   ChannelType,
   ModalBuilder,
   SlashCommandBuilder,
-  SlashCommandChannelOption,
+  type SlashCommandChannelOption,
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js";
-import { Command } from "../interface";
+import type { Command } from "../interface";
 
 export default {
   data: new SlashCommandBuilder()

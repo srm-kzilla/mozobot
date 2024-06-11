@@ -1,14 +1,14 @@
 import {
+  ActionRowBuilder,
+  ChannelType,
+  ModalBuilder,
   SlashCommandBuilder,
+  type SlashCommandSubcommandBuilder,
+  StringSelectMenuBuilder,
   TextInputBuilder,
   TextInputStyle,
-  ActionRowBuilder,
-  ModalBuilder,
-  StringSelectMenuBuilder,
-  SlashCommandSubcommandBuilder,
-  ChannelType,
 } from "discord.js";
-import { Command } from "../interface";
+import type { Command } from "../interface";
 import db from "../utils/database";
 
 export default {
@@ -29,7 +29,8 @@ export default {
             .setDescription("Channel to announce to")
             .setRequired(true)
             .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement),
-        ),
+        )
+        .addRoleOption(option => option.setName("role").setDescription("Role to mention").setRequired(false)),
     )
     // todo: take role mention input also
     .addSubcommand((subcommand: SlashCommandSubcommandBuilder) =>
@@ -43,7 +44,7 @@ export default {
     const subcommand = interaction.options.getSubcommand();
 
     if (subcommand === "create") {
-      const modal = new ModalBuilder().setCustomId(`template`).setTitle("Add Template");
+      const modal = new ModalBuilder().setCustomId("template").setTitle("Add Template");
       const Title = new TextInputBuilder()
         .setCustomId("title")
         .setLabel("Provide us with the Title")
@@ -91,7 +92,7 @@ export default {
       }));
 
       const selectMenu = new StringSelectMenuBuilder()
-        .setCustomId(`deleteTemplate`)
+        .setCustomId("deleteTemplate")
         .setPlaceholder("Select a template to delete")
         .addOptions(templatesData);
 
@@ -116,14 +117,15 @@ export default {
         return;
       }
       const channelId = (interaction.options.getChannel("channel")?.id || interaction.channelId) as string;
+      const roleId = interaction.options.getRole("role")?.id || ("none" as string);
       const templatesData = data.map(data => ({
         label: data.title.slice(0, 50),
         description: data.description.slice(0, 50),
-        value: JSON.stringify({ templateId: data._id.toString(), channelId }),
+        value: `${data._id.toString()}-${channelId}-${roleId}`,
       }));
 
       const selectMenu = new StringSelectMenuBuilder()
-        .setCustomId(`chooseTemplate`)
+        .setCustomId("chooseTemplate")
         .setPlaceholder("Select a template")
         .addOptions(templatesData);
       const actionRow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu);

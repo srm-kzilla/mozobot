@@ -1,4 +1,4 @@
-import { Db, MongoClient } from "mongodb";
+import { type Db, MongoClient } from "mongodb";
 import config from "../config";
 
 let db: Db;

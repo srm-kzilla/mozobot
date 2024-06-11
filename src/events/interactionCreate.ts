@@ -1,5 +1,5 @@
-import { Collection, Events, GuildMemberRoleManager, Interaction } from "discord.js";
-import { Command } from "../interface";
+import { type Collection, Events, type GuildMemberRoleManager, type Interaction } from "discord.js";
+import type { Command } from "../interface";
 import env from "../config/index";
 
 export default {

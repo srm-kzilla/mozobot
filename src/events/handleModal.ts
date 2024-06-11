@@ -6,8 +6,8 @@ import {
   Colors,
   EmbedBuilder,
   Events,
-  Interaction,
-  Message,
+  type Interaction,
+  type Message,
 } from "discord.js";
 import { z } from "zod";
 import { FOOTER_VALUE } from "../config/constant";
@@ -30,12 +30,17 @@ export default {
     const channel = interaction.guild.channels.cache.get(channelId);
 
     if (!channel) {
-      await interaction.reply({ content: "Target Channel Not Found", ephemeral: false });
+      await interaction.reply({
+        content: "Target Channel Not Found",
+        ephemeral: false,
+      });
       return;
     }
 
     if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement) {
-      await interaction.reply({ content: "Invalid Channel Provided. Please Provide a text channel" });
+      await interaction.reply({
+        content: "Invalid Channel Provided. Please Provide a text channel",
+      });
       return;
     }
     const createComponent = (messageId: string): ActionRowBuilder<ButtonBuilder> => {
@@ -68,9 +73,15 @@ export default {
 
       if (image === "none") {
         if (mention === "none") {
-          message = await channel.send({ content: `📢 Announcement`, embeds: [embed] });
+          message = await channel.send({
+            content: `📢 Announcement`,
+            embeds: [embed],
+          });
         } else {
-          message = await channel.send({ content: `📢 Announcement ${mention}`, embeds: [embed] });
+          message = await channel.send({
+            content: `📢 Announcement ${mention}`,
+            embeds: [embed],
+          });
         }
         const button = createComponent(message.id);
         await interaction.reply({
@@ -94,7 +105,10 @@ export default {
         embeds.push(newEmbed);
       });
       if (mention !== "none") {
-        message = await channel.send({ content: `📢 Announcement ${mention}`, embeds: embeds });
+        message = await channel.send({
+          content: `📢 Announcement ${mention}`,
+          embeds: embeds,
+        });
 
         await interaction.reply({
           content: `Embed sent to <#${channel.id}>`,
@@ -104,7 +118,10 @@ export default {
         });
         return;
       }
-      message = await channel.send({ content: `📢 Announcement`, embeds: embeds });
+      message = await channel.send({
+        content: `📢 Announcement`,
+        embeds: embeds,
+      });
 
       await interaction.reply({
         content: `Embed sent to <#${channel.id}>`,
@@ -116,7 +133,9 @@ export default {
       const title = interaction.fields.getTextInputValue("title");
       const description = interaction.fields.getTextInputValue("description") || " ";
       if (mention !== "none") {
-        message = await channel.send({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
+        message = await channel.send({
+          content: `📢 Announcement ${mention}\n# ${title}\n${description}`,
+        });
 
         await interaction.reply({
           content: `Message sent to <#${channel.id}>`,
@@ -144,7 +163,10 @@ export default {
         for (const imageUrl of validImages) {
           await channel.send({ content: imageUrl });
         }
-        await interaction.reply({ content: "Image sent successfully", ephemeral: false });
+        await interaction.reply({
+          content: "Image sent successfully",
+          ephemeral: false,
+        });
       } else {
         await interaction.reply({ content: "Invalid Image", ephemeral: false });
       }
@@ -152,12 +174,18 @@ export default {
       const title = interaction.fields.getTextInputValue("title") || null;
       const description = interaction.fields.getTextInputValue("description") || null;
       if (!messageId || !channelId || !type) {
-        await interaction.reply({ content: "Invalid data received", ephemeral: false });
+        await interaction.reply({
+          content: "Invalid data received",
+          ephemeral: false,
+        });
         return;
       }
 
       if (!title && !description) {
-        await interaction.reply({ content: "Both Title and Description can't be empty", ephemeral: false });
+        await interaction.reply({
+          content: "Both Title and Description can't be empty",
+          ephemeral: false,
+        });
         return;
       }
 
@@ -184,9 +212,15 @@ export default {
           ],
         });
       } else {
-        await message.edit({ content: `📢 Announcement ${mention}\n# ${title}\n${description}` });
+        await message.edit({
+          content: `📢 Announcement ${mention}\n# ${title}\n${description}`,
+        });
       }
-      await interaction.reply({ content: "Edited message", ephemeral: false, components: [] });
+      await interaction.reply({
+        content: "Edited message",
+        ephemeral: false,
+        components: [],
+      });
     }
   },
 };

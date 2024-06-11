@@ -1,4 +1,12 @@
-import { ChannelType, Colors, EmbedBuilder, Events, GuildMemberRoleManager, Interaction } from "discord.js";
+import {
+  ChannelType,
+  Colors,
+  EmbedBuilder,
+  Events,
+  roleMention,
+  type GuildMemberRoleManager,
+  type Interaction,
+} from "discord.js";
 import { ObjectId } from "mongodb";
 import config from "../../config";
 import { FOOTER_VALUE } from "../../config/constant";
@@ -18,20 +26,28 @@ export default {
       });
       return;
     }
-    const [button, templateId, channelId] = interaction.customId.split("-");
+    const [button, templateId, channelId, roleId] = interaction.customId.split("-");
     if (button !== "announce") return;
-    if (!templateId || !channelId) {
-      await interaction.reply({ content: "Invalid ChannelId", ephemeral: true });
+    if (!templateId || !channelId || !roleId) {
+      await interaction.reply({
+        content: "Invalid ChannelId",
+        ephemeral: true,
+      });
       return;
     }
     const channel = interaction.guild.channels.cache.get(channelId);
     if (!channel) {
-      await interaction.reply({ content: "Target Channel Not Found", ephemeral: true });
+      await interaction.reply({
+        content: "Target Channel Not Found",
+        ephemeral: true,
+      });
       return;
     }
 
     if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement) {
-      await interaction.reply({ content: "Invalid Channel Provided. Please Provide a text channel" });
+      await interaction.reply({
+        content: "Invalid Channel Provided. Please Provide a text channel",
+      });
       return;
     }
     await interaction.deferReply();
@@ -55,15 +71,23 @@ export default {
       .setTimestamp()
       .setFooter({ text: FOOTER_VALUE });
 
+    const isEeveryone = interaction.guild.roles.everyone.id === roleId;
+    const mention = isEeveryone ? "@everyone" : roleMention(roleId);
+    const embed_title = `📢 Announcement ${roleId === "none" ? "" : `- ${mention}`}`;
+
     if (!images) {
-      await channel.send({ content: "📢 Announcement - <@&1221428016266219714>", embeds: [embed] });
-      await interaction.editReply({ content: `Embeds sent to <#${channel.id}>` });
+      await channel.send({ content: embed_title, embeds: [embed] });
+      await interaction.editReply({
+        content: `Embeds sent to <#${channel.id}>`,
+      });
       return;
     }
 
     if (images.length < 0) {
-      await channel.send({ content: "📢 Announcement - <@&1221428016266219714>", embeds: [embed] });
-      await interaction.editReply({ content: `Embeds sent to <#${channel.id}>` });
+      await channel.send({ content: embed_title, embeds: [embed] });
+      await interaction.editReply({
+        content: `Embeds sent to <#${channel.id}>`,
+      });
       return;
     }
 
@@ -79,7 +103,8 @@ export default {
       const newEmbed = new EmbedBuilder().setImage(url).setColor(Colors.White);
       embeds.push(newEmbed);
     });
-    await channel.send({ content: "📢 Announcement - <@&1221428016266219714>", embeds: embeds });
+
+    await channel.send({ content: embed_title, embeds: embeds });
     await interaction.editReply({ content: `Embeds sent to <#${channel.id}>` });
   },
 };

@@ -1,6 +1,6 @@
-import { Events, Interaction } from "discord.js";
+import { Events, type Interaction } from "discord.js";
 import z from "zod";
-import { TemplateSchemaType } from "../../types";
+import type { TemplateSchemaType } from "../../types";
 import db from "../../utils/database";
 import isValidImageUrl from "../../utils/helper";
 
@@ -28,7 +28,10 @@ export default {
       .find({ guildId: interaction.guildId, isDeleted: false })
       .toArray();
     if (data.length >= 25) {
-      return interaction.reply({ content: "You can only have max 25 templates", ephemeral: false });
+      return interaction.reply({
+        content: "You can only have max 25 templates",
+        ephemeral: false,
+      });
     }
 
     const templateExists = data.some(template => template.description === description);
